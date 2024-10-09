@@ -111,14 +111,15 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/Edit"
+        android:id="@+id/Add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Edit"/>
+        android:text="Add"/>
 
     <Button
+        android:id="@+id/Cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Ok"/>
+        android:text="Cancel"/>
 
 </LinearLayout>

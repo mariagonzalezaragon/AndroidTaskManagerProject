@@ -17,19 +17,22 @@
         android:src="@drawable/picture1"/>
 
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp">
-
         <TextView
             android:id="@+id/txt11"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textAlignment="center"
             android:layout_marginTop="20dp"
-            android:text="María Angélica González Aragón"
+            android:text="Name"
+            android:fontFamily="sans-serif-condensed"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/txtRole"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:layout_marginTop="20dp"
+            android:text="Role"
             android:fontFamily="sans-serif-condensed"
             android:textStyle="bold"/>
 
@@ -38,24 +41,36 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="maria.gonzalez0530@gmail.com"
+            android:text="email@gmail.com"
             android:fontFamily="sans-serif-condensed"
             android:textStyle="italic"/>
 
-    </LinearLayout>
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_width="match_parent"
+        android:layout_height="198dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical">
 
         <TextView
-            android:layout_width="200dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="40dp"
-            android:gravity="center_horizontal"
-            android:text="Experienced in industrial engineering, project management, and programming. Training in Java, C#, Python, SQL, PHP, and JavaScript. Let's connect!"
-            android:fontFamily="sans-serif-condensed"/>
+            android:text="Assigned Projects"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <ListView
+            android:id="@+id/listv1"
+            android:layout_width="match_parent"
+            android:layout_height="219dp" />
+    </LinearLayout>
+
+
+
+
 
         <Button
             android:id="@+id/btn1"
@@ -64,7 +79,7 @@
             android:layout_marginTop="20dp"
             android:text="Edit" />
 
-    </LinearLayout>
+
 
 
 </LinearLayout>

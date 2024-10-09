@@ -32,15 +32,21 @@
             android:exported="false" />
         <activity
             android:name=".Register"
-            android:exported="false" />
-        <activity
-            android:name=".Splash"
             android:exported="true">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+
+
+        <activity
+            android:name=".Splash"
+            android:exported="false">
+
         </activity>
         <activity
             android:name=".Login"
