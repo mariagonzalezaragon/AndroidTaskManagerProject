@@ -28,10 +28,15 @@
             android:exported="false" />
         <activity
             android:name=".My_Profile"
-            android:exported="false" />
+            android:exported="false" >
+
+
+        </activity>
         <activity
             android:name=".Home"
-            android:exported="false" />
+            android:exported="false" >
+
+        </activity>
         <activity
             android:name=".Register"
             android:exported="true">

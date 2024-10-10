@@ -133,8 +133,6 @@ public class Register extends AppCompatActivity {
             }
         });
 
-//        Intent intent = new Intent(Register.this, Home.class);
-//        intent.putExtra("This is a test, welcome: ", name);
-//        startActivity(intent);
+
     }
 }
