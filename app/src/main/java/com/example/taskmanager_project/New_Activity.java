@@ -72,13 +72,13 @@ public class New_Activity extends AppCompatActivity {
         taskRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                taskList.clear();
+                taskList.clear(); // Clear the list before updating
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Task task = snapshot.getValue(Task.class);
                     task.setId(snapshot.getKey());  // Set the task ID from Firebase
                     taskList.add(task);
                 }
-                taskAdapter.notifyDataSetChanged();
+                taskAdapter.notifyDataSetChanged(); // Notify the adapter after the data is updated
             }
 
             @Override

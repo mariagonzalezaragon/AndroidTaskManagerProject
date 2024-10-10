@@ -7,6 +7,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Button;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.firebase.database.DatabaseReference;
@@ -45,6 +47,23 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             task.setStatus(holder.statusSpinner.getSelectedItem().toString());
             taskRef.child(task.getId()).setValue(task);
         });
+
+        holder.deleteButton.setOnClickListener(v -> {
+            // Delete the task from Firebase
+            taskRef.child(task.getId()).removeValue().addOnCompleteListener(taskDelete -> {
+                if (taskDelete.isSuccessful()) {
+                    // Notify the adapter directly instead of removing the item from the list again
+                    int pos = holder.getAdapterPosition(); // Get the updated position
+                    if (pos != RecyclerView.NO_POSITION) {
+                        taskList.remove(pos);
+                        notifyItemRemoved(pos);
+                        Toast.makeText(holder.itemView.getContext(), "Task deleted", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(holder.itemView.getContext(), "Failed to delete task", Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
     }
 
     @Override
@@ -55,7 +74,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     public static class TaskViewHolder extends RecyclerView.ViewHolder {
         TextView taskNameTextView, dueDateTextView;
         Spinner statusSpinner;
-        Button saveButton;
+        Button saveButton, deleteButton;
 
         public TaskViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -63,6 +82,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             dueDateTextView = itemView.findViewById(R.id.dueDateTextView);
             statusSpinner = itemView.findViewById(R.id.statusSpinner);
             saveButton = itemView.findViewById(R.id.saveButton);
+            deleteButton = itemView.findViewById(R.id.deleteButton);
         }
     }
 
@@ -77,3 +97,4 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         }
     }
 }
+
