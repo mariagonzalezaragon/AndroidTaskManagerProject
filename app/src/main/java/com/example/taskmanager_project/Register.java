@@ -26,7 +26,8 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class Register extends AppCompatActivity {
 
-    EditText emailEditText, passwordEditText, confirmPasswordEditText;
+    EditText nameEditText, emailEditText, passwordEditText, confirmPasswordEditText;
+    private String role;
     Button registerButton, loginregButton;
     FirebaseAuth firebaseAuth;
 
@@ -45,14 +46,15 @@ public class Register extends AppCompatActivity {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                String role = parentView.getItemAtPosition(position).toString();
-                Toast.makeText(Register.this, "Role: " + role, Toast.LENGTH_SHORT).show();
+                role = parentView.getItemAtPosition(position).toString();
             }
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
             }
         });
 
+
+        nameEditText = findViewById(R.id.name);
         emailEditText = findViewById(R.id.emailregister);
         passwordEditText = findViewById(R.id.passwordregister);
         confirmPasswordEditText = findViewById(R.id.confirmpasswordregister);
@@ -84,8 +86,10 @@ public class Register extends AppCompatActivity {
         String email = emailEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
         String confirmPassword = confirmPasswordEditText.getText().toString().trim();
+        String name = nameEditText.getText().toString().trim();
+        String selectedRole = role;
 
-        if(TextUtils.isEmpty(email) || TextUtils.isEmpty(password) || TextUtils.isEmpty(confirmPassword)){
+        if(TextUtils.isEmpty(name) || TextUtils.isEmpty(email) || TextUtils.isEmpty(password) || TextUtils.isEmpty(confirmPassword)){
             Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -108,6 +112,11 @@ public class Register extends AppCompatActivity {
             return;
         }
 
+        if ("Select a role".equals(selectedRole)) {
+            Toast.makeText(this, "Please select a valid role", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         //If validations passed successfully - Then we will push the DB
         firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
@@ -123,5 +132,9 @@ public class Register extends AppCompatActivity {
                 }
             }
         });
+
+//        Intent intent = new Intent(Register.this, Home.class);
+//        intent.putExtra("This is a test, welcome: ", name);
+//        startActivity(intent);
     }
 }
