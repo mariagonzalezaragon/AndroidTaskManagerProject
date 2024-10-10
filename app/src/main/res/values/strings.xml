@@ -1,3 +1,25 @@
 <resources>
     <string name="app_name">TaskManager-Project</string>
+
+    <string-array name="roles_list">
+        <item>Select a role</item>
+        <item>Project Manager</item>
+        <item>Developer</item>
+        <item>Designer</item>
+        <item>Sponsor</item>
+        <item>Product Owner</item>
+    </string-array>
+
+    <string-array name="project_list">
+        <item>Project 1</item>
+        <item>Project 2</item>
+        <item>Project 3</item>
+    </string-array>
+
+    <string-array name="task_status">
+        <item>To Do</item>
+        <item>In Progress</item>
+        <item>Done</item>
+    </string-array>
+
 </resources>
