@@ -66,12 +66,11 @@
                 android:textSize="20dp"
                 android:textStyle="bold" />
 
-            <EditText
+            <Spinner
                 android:id="@+id/et_Status"
-                android:layout_width="320dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Status"
-                android:padding="10dp" />
+                android:spinnerMode="dropdown" />
         </LinearLayout>
     </LinearLayout>
 
@@ -84,6 +83,6 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="10dp" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"/>
 </LinearLayout>

@@ -14,5 +14,10 @@
         <item>Project 2</item>
         <item>Project 3</item>
     </string-array>
+    <string-array name="task_status">
+        <item>To Do</item>
+        <item>In Progress</item>
+        <item>Done</item>
+    </string-array>
 
 </resources>
