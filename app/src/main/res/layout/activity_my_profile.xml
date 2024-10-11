@@ -6,17 +6,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:layout_gravity="center_horizontal"
     android:padding="16dp">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="Personal Information:"
-        android:fontFamily="sans-serif-condensed"
+        android:text="Personal Information"
         android:textStyle="bold"/>
 
-    <!-- Row for Image and Change Image Button -->
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -25,45 +25,43 @@
 
         <ImageView
             android:id="@+id/topImage"
-            android:layout_width="0dp"
+            android:layout_width="150dp"
             android:layout_height="150dp"
-            android:layout_weight="2"
             android:contentDescription="topImage"
             android:src="@drawable/ic_launcher_foreground"/>
 
         <Button
-            android:layout_width="0dp"
+            android:id="@+id/btnImage"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_marginTop="100dp"
+            android:layout_marginLeft="20dp"
             android:text="Change Image"/>
+
     </LinearLayout>
 
     <!-- Row for Name -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="20dp">
+        android:orientation="horizontal">
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Name"
+            android:text="Name :"
             android:fontFamily="sans-serif-condensed"
             android:textStyle="bold"/>
 
         <EditText
             android:id="@+id/txtProfName"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:hint="Name"
-            android:fontFamily="sans-serif-condensed"
-            android:textStyle="italic"/>
+            android:layout_height="48dp"
+            android:layout_weight="2"/>
     </LinearLayout>
 
-    <!-- Row for Position -->
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -73,26 +71,32 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Position"
-            android:fontFamily="sans-serif-condensed"
+            android:text="Position : "
             android:textStyle="bold"/>
 
-        <EditText
-            android:id="@+id/txtProfPosition"
+        <Spinner
+            android:id="@+id/spinnerPosition"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_weight="2"
-            android:hint="Position"
-            android:fontFamily="sans-serif-condensed"
-            android:textStyle="italic"/>
+            />
     </LinearLayout>
+
+
+    <Button
+        android:id="@+id/btnSaveUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Save Changes"
+        android:textColor="@color/white" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Account Information:"
+        android:text="Account Information"
         android:textStyle="bold"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="20dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -103,21 +107,18 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Email"
-            android:fontFamily="sans-serif-condensed"
+            android:text="Old Password :"
             android:textStyle="bold"/>
 
         <EditText
-            android:id="@+id/txtProfEmail"
+            android:id="@+id/txtProfOldPass"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_weight="2"
-            android:hint="mail@gmail.com"
-            android:fontFamily="sans-serif-condensed"
-            android:textStyle="italic"/>
+            />
     </LinearLayout>
 
-    <!-- Row for Old Password -->
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -127,42 +128,15 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Old Password"
-            android:fontFamily="sans-serif-condensed"
+            android:text="New Password :"
             android:textStyle="bold"/>
 
         <EditText
-            android:id="@+id/txtOldPassword"
+            android:id="@+id/txtProfNewPass"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_weight="2"
-            android:hint="Old Password"
-            android:fontFamily="sans-serif-condensed"
-            android:textStyle="italic"/>
-    </LinearLayout>
-
-    <!-- Row for New Password -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="New Password"
-            android:fontFamily="sans-serif-condensed"
-            android:textStyle="bold"/>
-
-        <EditText
-            android:id="@+id/txtProfNewPassword"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:hint="New Password"
-            android:fontFamily="sans-serif-condensed"
-            android:textStyle="italic"/>
+            />
     </LinearLayout>
 
     <LinearLayout
@@ -174,44 +148,47 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Confirm New Password"
-            android:fontFamily="sans-serif-condensed"
+            android:text="Confirm New Password :"
             android:textStyle="bold"/>
 
         <EditText
-            android:id="@+id/txtProfPassword"
+            android:id="@+id/txtProfConfirmPass"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:hint="Confirm New Password"
-            android:fontFamily="sans-serif-condensed"
-            android:textStyle="italic"/>
+            />
     </LinearLayout>
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp">
     <Button
-        android:id="@+id/btnSave"
-        android:layout_width="200dp"
+        android:id="@+id/bntSavePass"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:layout_marginRight="20dp"
         android:text="Save Changes"
         android:textColor="@color/white"
         android:layout_gravity="center_horizontal"/>
 
     <Button
-        android:id="@+id/btnDelete"
-        android:layout_width="200dp"
+        android:id="@+id/btndeleteAccount"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Delete Account"
         android:layout_marginTop="10dp"
         android:textColor="@color/white"
         android:layout_gravity="center_horizontal"/>
-
+    </LinearLayout>
     <Button
-        android:id="@+id/btnSingOut"
-        android:layout_width="200dp"
+        android:id="@+id/btnLogout"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Log Out"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:textColor="@color/white"
         android:layout_gravity="center_horizontal"/>
 
