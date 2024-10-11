@@ -1,44 +1,77 @@
 package com.example.taskmanager_project;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.view.View;
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Toast;
+import android.widget.TextView;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 public class Home extends AppCompatActivity {
+
+    Button editProfile, taskManagment, dashboard, logout;
+    Spinner spinner;
+    TextView textName, infoText;
+    ImageView imgProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        editProfile = findViewById(R.id.btnEditProfile);
+        taskManagment = findViewById(R.id.btnTasks);
+        dashboard = findViewById(R.id.btnDashboard);
+        logout = findViewById(R.id.logout);
+        //spinner = findViewById(R.id.spinner);
+        textName = findViewById(R.id.nametxt);
+        infoText = findViewById(R.id.personaltxt);
+        imgProfile = findViewById(R.id.topImage);
 
-        // Spinner for role selection
-        Spinner spinner = findViewById(R.id.spinner_project);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.project_list, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
 
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        editProfile.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                String role = parentView.getItemAtPosition(position).toString();
-
-                Toast.makeText(Home.this, "Role: " + role, Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-
+        public void onClick(View view) {
+            Intent intent = new Intent(Home.this,
+                    My_Profile.class);
+            startActivity(intent);
+            finish();
             }
         });
+
+        taskManagment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Home.this,
+                        ActivityDetail.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        dashboard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Home.this,
+                        Dashboard.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(Home.this, Login.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
     }
 }
