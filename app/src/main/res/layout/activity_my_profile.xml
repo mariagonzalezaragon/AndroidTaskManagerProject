@@ -28,7 +28,8 @@
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:contentDescription="topImage"
-            android:src="@drawable/ic_launcher_foreground"/>
+            android:src="@drawable/ic_launcher_foreground"
+            android:scaleType="centerCrop" />
 
         <Button
             android:id="@+id/btnImage"
@@ -36,7 +37,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="100dp"
             android:layout_marginLeft="20dp"
-            android:text="Change Image"/>
+            android:text="Change Image" />
 
     </LinearLayout>
 

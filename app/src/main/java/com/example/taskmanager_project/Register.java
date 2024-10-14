@@ -8,27 +8,29 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.view.View;
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.Firebase;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Register extends AppCompatActivity {
 
     EditText nameEditText, emailEditText, passwordEditText, confirmPasswordEditText;
+    private String selectedUserId;
     private String role;
+    private String photoUrl = "";
     Button registerButton, loginregButton;
+    List<User> userList;
+    private DatabaseReference userDatabase;
     FirebaseAuth firebaseAuth;
 
     @Override
@@ -53,15 +55,16 @@ public class Register extends AppCompatActivity {
             }
         });
 
-
         nameEditText = findViewById(R.id.name);
         emailEditText = findViewById(R.id.emailregister);
         passwordEditText = findViewById(R.id.passwordregister);
         confirmPasswordEditText = findViewById(R.id.confirmpasswordregister);
         registerButton = findViewById(R.id.registerbtn);
         loginregButton = findViewById(R.id.loginregbtn);
-
+        userDatabase = FirebaseDatabase.getInstance().getReference("users");
         firebaseAuth = FirebaseAuth.getInstance();
+
+        userList = new ArrayList<>();
 
         loginregButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,14 +85,17 @@ public class Register extends AppCompatActivity {
         });
     }
 
+
+
     private void registerUser() {
         String email = emailEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
         String confirmPassword = confirmPasswordEditText.getText().toString().trim();
-        String name = nameEditText.getText().toString().trim();
+        String userName = nameEditText.getText().toString().trim();
         String selectedRole = role;
+        String role;
 
-        if(TextUtils.isEmpty(name) || TextUtils.isEmpty(email) || TextUtils.isEmpty(password) || TextUtils.isEmpty(confirmPassword)){
+        if(TextUtils.isEmpty(userName) || TextUtils.isEmpty(email) || TextUtils.isEmpty(password) || TextUtils.isEmpty(confirmPassword)){
             Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -124,6 +130,8 @@ public class Register extends AppCompatActivity {
                 if(task.isSuccessful()){
                     Toast.makeText(Register.this, "User successfully registered", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(Register.this, Home.class));
+                    // And create users database
+                    createUser(email, userName, selectedRole, photoUrl);
                     finish();
                 }
                 else{
@@ -133,6 +141,28 @@ public class Register extends AppCompatActivity {
             }
         });
 
-
     }
+
+    private void createUser(String email, String userName, String selectedRole, String photoUrl) {
+        String userId = firebaseAuth.getCurrentUser() != null ? firebaseAuth.getCurrentUser().getUid() : null;
+
+        if (userId == null) {
+            Toast.makeText(this, "User ID is null. Registration may have failed.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        User user = new User(userId, email, userName, selectedRole, photoUrl);
+
+        userDatabase.child(userId).setValue(user).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Toast.makeText(this, "User created in database", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Failed to create user in database", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+
+
 }

@@ -1,23 +1,32 @@
 package com.example.taskmanager_project;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
-
+import com.google.android.gms.tasks.Task;
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 
 public class My_Profile extends AppCompatActivity {
 
@@ -30,7 +39,11 @@ public class My_Profile extends AppCompatActivity {
     private String role;
 
     FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+    DatabaseReference userDatabase = FirebaseDatabase.getInstance().getReference("users");
     String emailUser;
+    private static final int PICK_IMAGE_REQUEST = 1;
+    private ImageView topImage;
+    private Uri imageUri;
 
 
     @Override
@@ -49,13 +62,16 @@ public class My_Profile extends AppCompatActivity {
         btnDeleteAccount = findViewById(R.id.btndeleteAccount);
         btnLogout = findViewById(R.id.btnLogout);
         bntSavePass = findViewById(R.id.bntSavePass);
+        btnImage = findViewById(R.id.btnImage);
+        topImage = findViewById(R.id.topImage);
 
 
-        if (currentUser != null) {
-            emailUser = currentUser.getEmail();
-        } else {
-            emailUser = "Filed try again later";
-        }
+        // I commented this as it was in the method loaduserdata - maria
+        //if (currentUser != null) {
+        //  emailUser = currentUser.getEmail();
+        //} else {
+        //  emailUser = "Filed try again later";
+        // }
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(My_Profile.this,
                 R.array.roles_list, android.R.layout.simple_spinner_item);
@@ -72,6 +88,9 @@ public class My_Profile extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parentView) {
             }
         });
+
+        loadUserData();
+
 
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,6 +122,21 @@ public class My_Profile extends AppCompatActivity {
             }
         });
 
+
+        btnSaveUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                saveUserData();
+            }
+        });
+
+        btnImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                openImageChooser();
+            }
+        });
     }
 
     private void handlePassword() {
@@ -142,5 +176,113 @@ public class My_Profile extends AppCompatActivity {
                         Toast.makeText(My_Profile.this, "Password must be at least 6 characters.", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+
+    private void loadUserData() {
+        String userId = currentUser.getUid();
+
+        userDatabase.child(userId).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (task.isSuccessful() && task.getResult() != null) {
+                    DataSnapshot snapshot = task.getResult();
+
+                    User user = snapshot.getValue(User.class);
+                    if (user != null) {
+                        txtProfName.setText(user.getUserName());
+                        if (user.getPhotoUrl() != null) {
+                            //failed attempt to use glide
+                        }
+
+                        String role = user.getRole();
+
+                        setSpinnerRole(role);
+                    }
+                } else {
+                    Toast.makeText(My_Profile.this, "Failed to load user data", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private void setSpinnerRole(String role) {
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.roles_list, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerPosition.setAdapter(adapter);
+
+
+        int position = adapter.getPosition(role);
+        if (position >= 0) {
+            spinnerPosition.setSelection(position);
+        }
+    }
+
+    private void saveUserData() {
+        String userId = currentUser.getUid();
+
+        userDatabase.child(userId).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (task.isSuccessful() && task.getResult() != null) {
+                    DataSnapshot snapshot = task.getResult();
+                    User user = snapshot.getValue(User.class);
+
+                    if (user != null) {
+                        String updatedName = txtProfName.getText().toString().trim();
+                        String updatedRole = role;
+
+                        if (updatedName.isEmpty()) {
+                            txtProfName.setError("Please enter your name");
+                            return;
+                        }
+
+                        if (!updatedName.equals(user.getUserName())) {
+                            user.setUserName(updatedName);
+                        }
+                        if (!updatedRole.equals(user.getRole())) {
+                            user.setRole(updatedRole);
+                        }
+
+
+                        if (imageUri != null) {
+                            String imageUrl = imageUri.toString();
+                            user.setPhotoUrl(imageUrl);
+                        }
+
+                        // Ahora se guarda el usuario actualizado en la base de datos
+                        userDatabase.child(userId).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(My_Profile.this, "User data updated successfully", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(My_Profile.this, "Failed to update user data", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    }
+                } else {
+                    Toast.makeText(My_Profile.this, "Failed to load user data", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private void openImageChooser() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            imageUri = data.getData();
+            topImage.setImageURI(imageUri);
+        }
     }
 }
