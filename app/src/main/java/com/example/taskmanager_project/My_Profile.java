@@ -3,6 +3,7 @@ package com.example.taskmanager_project;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -12,32 +13,24 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 import com.google.android.gms.tasks.Task;
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 public class My_Profile extends AppCompatActivity {
 
-
     EditText txtProfName, profOldPass, profNewPass, profConfirmPass;
-
     Spinner spinnerPosition;
-
     Button btnImage, btnSaveUser, btnDeleteAccount, btnLogout, bntSavePass;
     private String role;
-
     FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
     DatabaseReference userDatabase = FirebaseDatabase.getInstance().getReference("users");
     String emailUser;
@@ -45,12 +38,10 @@ public class My_Profile extends AppCompatActivity {
     private ImageView topImage;
     private Uri imageUri;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_profile);
-
 
         txtProfName = findViewById(R.id.txtProfName);
         spinnerPosition = findViewById(R.id.spinnerPosition);
@@ -62,9 +53,7 @@ public class My_Profile extends AppCompatActivity {
         btnDeleteAccount = findViewById(R.id.btndeleteAccount);
         btnLogout = findViewById(R.id.btnLogout);
         bntSavePass = findViewById(R.id.bntSavePass);
-        btnImage = findViewById(R.id.btnImage);
         topImage = findViewById(R.id.topImage);
-
 
         // I commented this as it was in the method loaduserdata - maria
         //if (currentUser != null) {
@@ -89,8 +78,7 @@ public class My_Profile extends AppCompatActivity {
             }
         });
 
-        loadUserData();
-
+        readUserData();
 
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,46 +93,64 @@ public class My_Profile extends AppCompatActivity {
         btnDeleteAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                currentUser.delete().addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        Intent intent = new Intent(My_Profile.this, Register.class);
-                        startActivity(intent);
-                        finish();
-                    }
-                });
+                new androidx.appcompat.app.AlertDialog.Builder(My_Profile.this)
+                        .setTitle("Confirm Delete")
+                        .setMessage("Are you sure you want to delete your account? This action is irreversible.")
+                        .setPositiveButton("Yes", (dialog, which) -> {
+                            String userId = currentUser.getUid();
+                            userDatabase.child(userId).removeValue().addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    currentUser.delete().addOnCompleteListener(authTask -> {
+                                        if (authTask.isSuccessful()) {
+                                            Intent intent = new Intent(My_Profile.this, Register.class);
+                                            startActivity(intent);
+                                            finish();
+                                        } else {
+                                            Toast.makeText(My_Profile.this,
+                                                    "Failed to delete account from Auth. Please try again.",
+                                                    Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                } else {
+                                    Toast.makeText(My_Profile.this,
+                                            "Failed to delete account from database. Please try again.",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        })
+                        .setNegativeButton("No", (dialog, which) -> {
+                            dialog.dismiss();
+                        })
+                        .show();
             }
         });
 
         bntSavePass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                handlePassword();
+                updatePassword();
             }
         });
-
 
         btnSaveUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                saveUserData();
+                updateUserData();
             }
         });
 
         btnImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 openImageChooser();
             }
         });
     }
 
-    private void handlePassword() {
-
+    private void updatePassword() {
         String oldPassword = profOldPass.getText().toString().trim();
         String newPassword = profNewPass.getText().toString().trim();
         String confirmPassword = profConfirmPass.getText().toString().trim();
-
 
         if (oldPassword.isEmpty()) {
             profOldPass.setError("Please enter your old password");
@@ -159,8 +165,7 @@ public class My_Profile extends AppCompatActivity {
             return;
         }
         if (!newPassword.equals(confirmPassword)) {
-            Toast.makeText(My_Profile.this, "Password confirmation do not match, try again", Toast.LENGTH_SHORT).show();
-
+            Toast.makeText(My_Profile.this, "Password confirmation does not match, try again", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -168,7 +173,6 @@ public class My_Profile extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Toast.makeText(My_Profile.this, "Password updated successfully", Toast.LENGTH_SHORT).show();
-                        profOldPass.setText("");
                         profOldPass.setText("");
                         profNewPass.setText("");
                         profConfirmPass.setText("");
@@ -178,26 +182,36 @@ public class My_Profile extends AppCompatActivity {
                 });
     }
 
+    private void readUserData() {
+        if (currentUser == null) {
+            Toast.makeText(My_Profile.this, "No user is currently logged in", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-    private void loadUserData() {
         String userId = currentUser.getUid();
-
         userDatabase.child(userId).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if (task.isSuccessful() && task.getResult() != null) {
                     DataSnapshot snapshot = task.getResult();
-
                     User user = snapshot.getValue(User.class);
                     if (user != null) {
                         txtProfName.setText(user.getUserName());
-                        if (user.getPhotoUrl() != null) {
-                            //failed attempt to use glide
+
+                        String photoUrl = user.getPhotoUrl();
+                        Log.d("ImageUri", "Loaded URI: " + photoUrl);
+
+                        if (photoUrl != null && !photoUrl.isEmpty()) {
+                            Picasso.get()
+                                    .load(photoUrl)
+                                    .placeholder(R.drawable.placeholder_image)
+                                    .error(R.drawable.error_image)
+                                    .into(topImage);
+                        } else {
+                            topImage.setImageResource(R.drawable.placeholder_image);
                         }
 
-                        String role = user.getRole();
-
-                        setSpinnerRole(role);
+                        setSpinnerRole(user.getRole());
                     }
                 } else {
                     Toast.makeText(My_Profile.this, "Failed to load user data", Toast.LENGTH_SHORT).show();
@@ -212,14 +226,13 @@ public class My_Profile extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerPosition.setAdapter(adapter);
 
-
         int position = adapter.getPosition(role);
         if (position >= 0) {
             spinnerPosition.setSelection(position);
         }
     }
 
-    private void saveUserData() {
+    private void updateUserData() {
         String userId = currentUser.getUid();
 
         userDatabase.child(userId).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
@@ -245,13 +258,11 @@ public class My_Profile extends AppCompatActivity {
                             user.setRole(updatedRole);
                         }
 
-
                         if (imageUri != null) {
                             String imageUrl = imageUri.toString();
                             user.setPhotoUrl(imageUrl);
                         }
 
-                        // Ahora se guarda el usuario actualizado en la base de datos
                         userDatabase.child(userId).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
@@ -263,8 +274,6 @@ public class My_Profile extends AppCompatActivity {
                             }
                         });
                     }
-                } else {
-                    Toast.makeText(My_Profile.this, "Failed to load user data", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -283,6 +292,21 @@ public class My_Profile extends AppCompatActivity {
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             imageUri = data.getData();
             topImage.setImageURI(imageUri);
+            uploadImageToFirebase();
+        }
+    }
+
+    private void uploadImageToFirebase() {
+        if (imageUri != null) {
+            String userId = currentUser.getUid();
+            StorageReference storageRef = FirebaseStorage.getInstance().getReference("profile_images/" + userId);
+            storageRef.putFile(imageUri).addOnSuccessListener(taskSnapshot -> {
+                storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                    String imageUrl = uri.toString();
+
+                    userDatabase.child(userId).child("photoUrl").setValue(imageUrl);
+                });
+            });
         }
     }
 }

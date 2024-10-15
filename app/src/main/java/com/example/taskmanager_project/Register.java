@@ -27,7 +27,7 @@ public class Register extends AppCompatActivity {
     EditText nameEditText, emailEditText, passwordEditText, confirmPasswordEditText;
     private String selectedUserId;
     private String role;
-    private String photoUrl = "";
+    private String photoUrl = "https://example.com/profile.jpg";
     Button registerButton, loginregButton;
     List<User> userList;
     private DatabaseReference userDatabase;

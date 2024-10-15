@@ -35,7 +35,16 @@
         android:hint="Enter your password"
         android:inputType="textPassword"
         android:padding="12dp"
-        android:layout_marginBottom="24dp" />
+       />
+
+    <TextView
+        android:id="@+id/forgotpassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Forgot your password?"
+        android:textSize="10sp"
+        android:layout_marginBottom="15dp"
+       />
 
     <Button
         android:id="@+id/loginbtn"
