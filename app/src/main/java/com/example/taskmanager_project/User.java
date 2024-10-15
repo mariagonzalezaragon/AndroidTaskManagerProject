@@ -7,12 +7,9 @@ public class User {
     private String role;
     private String photoUrl;
 
-
-
-
     public User() {
+        // Constructor vacío necesario para Firebase
     }
-
 
     public User(String userId, String email, String userName, String role, String photoUrl) {
         this.userId = userId;
@@ -23,16 +20,18 @@ public class User {
     }
 
     public User(String updatedName, String updatedRole) {
+        this.userName = updatedName;
+        this.role = updatedRole;
     }
 
+    // Getters y Setters
     public String getUserId() {
         return userId;
     }
 
-    public void setUserId(String id) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
-
 
     public String getEmail() {
         return email;
@@ -42,7 +41,6 @@ public class User {
         this.email = email;
     }
 
-
     public String getUserName() {
         return userName;
     }
@@ -51,7 +49,6 @@ public class User {
         this.userName = userName;
     }
 
-
     public String getRole() {
         return role;
     }
@@ -59,7 +56,6 @@ public class User {
     public void setRole(String role) {
         this.role = role;
     }
-
 
     public String getPhotoUrl() {
         return photoUrl;
@@ -73,5 +69,4 @@ public class User {
     public String toString(){
         return userId + ": " + userName + " - " + email + ".";
     }
-
 }
