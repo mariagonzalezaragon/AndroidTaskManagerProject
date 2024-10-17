@@ -1,33 +1,46 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:padding="16dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Manage Users"
-        android:textStyle="bold"
-        android:textSize="20sp"
-        android:textColor="@color/darkpurple"
-        android:layout_gravity="center_horizontal"
-        android:paddingBottom="16dp"/>
-
+    <!-- RecyclerView para la lista de usuarios -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_users"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"/>
+        android:layout_height="0dp"
+        android:layout_above="@id/buttons_layout"
+        android:layout_alignParentTop="true"
+        android:layout_weight="1"/>
 
-    <Button
-        android:id="@+id/btnAddUser"
-        android:layout_width="wrap_content"
+    <!-- Contenedor para los botones -->
+    <LinearLayout
+        android:id="@+id/buttons_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Add New User"
-        android:textColor="@color/white"
-        android:layout_gravity="center_horizontal"/>
-</LinearLayout>
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="8dp">
+
+        <!-- Botón para agregar un nuevo usuario -->
+        <Button
+            android:id="@+id/btnAddUser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add New User"
+            android:textColor="@color/white"
+            android:layout_marginEnd="8dp"
+            android:padding="10dp"/>
+
+        <!-- Botón para regresar a Home -->
+        <Button
+            android:id="@+id/btnHome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Home"
+            android:textColor="@color/white"
+            android:padding="10dp"/>
+
+    </LinearLayout>
+</RelativeLayout>
