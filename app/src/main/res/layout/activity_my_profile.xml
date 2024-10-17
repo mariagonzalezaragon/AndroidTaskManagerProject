@@ -186,13 +186,33 @@
         android:textColor="@color/white"
         android:layout_gravity="center_horizontal"/>
     </LinearLayout>
-    <Button
-        android:id="@+id/btnLogout"
-        android:layout_width="wrap_content"
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Log Out"
-        android:layout_marginTop="20dp"
-        android:textColor="@color/white"
-        android:layout_gravity="center_horizontal"/>
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:paddingTop="30dp">
+        <Button
+            android:id="@+id/btnHome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Home"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="10dp"
+            android:textColor="@color/white"
+            android:layout_gravity="center_horizontal"/>
+        <Button
+            android:id="@+id/btnLogout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Log Out"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/white"
+            android:layout_gravity="center_horizontal"/>
+
+
+    </LinearLayout>
 
 </LinearLayout>
