@@ -100,12 +100,26 @@
         android:layout_marginBottom="20dp"
         android:text="Task Management"/>
 
-    <Button
-        android:id="@+id/btnDashboard"
-        android:layout_width="300dp"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="40dp"
-        android:text="Dashboard" />
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnUsers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="40dp"
+            android:text="Manage Users" />
+        <Button
+            android:id="@+id/btnRoles"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="40dp"
+            android:text="Manage Roles" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/logout"
