@@ -21,25 +21,39 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="10dp">
+        android:gravity="center_horizontal">
 
         <ImageView
+            android:layout_marginTop="40dp"
             android:id="@+id/topImage"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:contentDescription="topImage"
             android:src="@drawable/ic_launcher_foreground"
             android:scaleType="centerCrop" />
-
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
         <Button
-            android:id="@+id/btnImage"
+            android:id="@+id/btnSelectImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="100dp"
             android:layout_marginLeft="20dp"
-            android:text="Change Image" />
+            android:layout_marginTop="80dp"
+            android:text="Select Image" />
 
+        <Button
+            android:id="@+id/btnUploadImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+
+            android:text="Uplad Image" />
     </LinearLayout>
+    </LinearLayout>
+
 
     <!-- Row for Name -->
     <LinearLayout
