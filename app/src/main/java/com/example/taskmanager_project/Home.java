@@ -27,7 +27,7 @@ public class Home extends AppCompatActivity {
     private FirebaseAuth auth;
     private FirebaseUser currentUser;
     private DatabaseReference userDatabase;
-
+    private String currentUserRole;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,7 +68,7 @@ public class Home extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Home.this,
-                        ActivityDetail.class);
+                        New_Activity.class);
                 startActivity(intent);
                 finish();
             }
@@ -106,6 +106,7 @@ public class Home extends AppCompatActivity {
 
     }
 
+
     private void loadUserRole() {
         String userId = currentUser.getUid();
 
@@ -113,14 +114,13 @@ public class Home extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
-                    String role = snapshot.child("role").getValue(String.class);
+                    currentUserRole = snapshot.child("role").getValue(String.class); // Save the role
 
-                    assert role != null;
-                    if (role.equals("Project Manager")) {
-                            users.setVisibility(View.VISIBLE);
-                            roles.setVisibility(View.VISIBLE);
-                        }
-
+                    assert currentUserRole != null;
+                    if (currentUserRole.equals("Project Manager")) {
+                        users.setVisibility(View.VISIBLE);
+                        roles.setVisibility(View.VISIBLE);
+                    }
                 }
             }
 
@@ -128,8 +128,11 @@ public class Home extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(Home.this, "Failed to load user data", Toast.LENGTH_SHORT).show();
             }
-
         });
+    }
+
+    public String getCurrentUserRole() {
+        return currentUserRole; // Add this method to access the role
     }
 
 }

@@ -21,6 +21,13 @@
             android:paddingBottom="8dp"/>
 
         <TextView
+            android:id="@+id/userTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Assigned User"
+            android:paddingBottom="8dp"/>
+
+        <TextView
             android:id="@+id/dueDateTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -31,21 +38,23 @@
             android:id="@+id/statusSpinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-        <Button
-            android:id="@+id/saveButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Save Status"/>
-        <Button
-            android:id="@+id/deleteButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Delete"/>
-    </LinearLayout>
-    </LinearLayout>
 
+            <Button
+                android:id="@+id/saveButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Edit Status"/>
+
+            <Button
+                android:id="@+id/deleteButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="  Delete  "/>
+        </LinearLayout>
+    </LinearLayout>
 </androidx.cardview.widget.CardView>

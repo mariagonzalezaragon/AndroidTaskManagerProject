@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -10,76 +9,102 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp"
-        android:gravity="top">
+        android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
+        <!-- Task Name Field -->
+        <TextView
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                android:id="@+id/Task"
-                android:layout_width="120dp"
-                android:layout_height="wrap_content"
-                android:text="Task Name"
-                android:textSize="20dp"
-                android:textStyle="bold" />
+            android:text="Task Name"
+            android:textSize="20dp"
+            android:textStyle="bold" />
 
-            <EditText
-                android:id="@+id/et_task"
-                android:layout_width="320dp"
-                android:layout_height="wrap_content"
-                android:hint="Task Name"
-                android:padding="10dp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
+        <EditText
+            android:id="@+id/et_task"
+            android:layout_width="320dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                android:id="@+id/dueDate"
-                android:layout_width="120dp"
-                android:layout_height="wrap_content"
-                android:text="Due Date"
-                android:textSize="20dp"
-                android:textStyle="bold" />
-
-            <EditText
-                android:id="@+id/et_dueDate"
-                android:layout_width="320dp"
-                android:layout_height="wrap_content"
-                android:hint="Due Date"
-                android:padding="10dp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                android:id="@+id/Status"
-                android:layout_width="120dp"
-                android:layout_height="wrap_content"
-                android:text="Status"
-                android:textSize="20dp"
-                android:textStyle="bold" />
-
-            <Spinner
-                android:id="@+id/et_Status"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:spinnerMode="dropdown" />
-        </LinearLayout>
+            android:hint="Task Name"
+            android:padding="10dp" />
     </LinearLayout>
 
-    <Button
-        android:id="@+id/Add"
+    <!-- User Selection Field -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="Assign User"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+        <Spinner
+            android:id="@+id/user_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <!-- Due Date Field -->
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add" />
+        android:orientation="horizontal">
 
+        <TextView
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="Due Date"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/et_dueDate"
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:hint="Due Date"
+            android:padding="10dp" />
+    </LinearLayout>
+
+    <!-- Status Field -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="Status"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+        <Spinner
+            android:id="@+id/status_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end"
+        >
+        <Button
+            android:id="@+id/add_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Task"
+            android:layout_alignParentStart="true" /> <!-- Aligns to the left -->
+
+        <Button
+            android:id="@+id/go_to_home"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Home Page"
+            android:layout_alignParentEnd="true" />
+    </RelativeLayout>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
