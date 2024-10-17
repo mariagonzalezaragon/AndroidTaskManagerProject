@@ -16,7 +16,7 @@
         android:text="LOGIN PAGE"
         android:textSize="28sp"
         android:textStyle="bold"
-        android:textColor="@color/green"
+        android:textColor="@color/darkpurple"
         android:layout_marginBottom="24dp" />
 
     <EditText
@@ -52,7 +52,7 @@
         android:layout_height="wrap_content"
         android:text="LOGIN"
         android:textColor="@color/white"
-        android:backgroundTint="@color/green"
+        android:backgroundTint="@color/purple"
         android:paddingVertical="12dp"
         android:textStyle="bold"
         android:layout_marginBottom="16dp" />
@@ -61,7 +61,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Don't have an account? Register"
-        android:textColor="@color/green"
+        android:textColor="@color/purple"
         android:backgroundTint="@color/white"
         android:paddingVertical="12dp"
         android:textStyle="bold"

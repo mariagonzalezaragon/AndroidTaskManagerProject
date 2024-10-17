@@ -13,10 +13,10 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="REGISTER PAGE"
+        android:text="Please, register your information"
         android:textSize="28sp"
         android:textStyle="bold"
-        android:textColor="@color/green"
+        android:textColor="@color/darkpurple"
         android:layout_marginBottom="24dp" />
 
     <LinearLayout
@@ -86,7 +86,7 @@
         android:layout_height="wrap_content"
         android:text="REGISTER"
         android:textColor="@color/white"
-        android:backgroundTint="@color/green"
+        android:backgroundTint="@color/purple"
         android:paddingVertical="12dp"
         android:textStyle="bold"
         android:layout_marginBottom="16dp" />
@@ -96,7 +96,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Already have an account? Login"
-        android:textColor="@color/green"
+        android:textColor="@color/purple"
         android:backgroundTint="@color/white"
         android:paddingVertical="12dp"
         android:textStyle="bold"
