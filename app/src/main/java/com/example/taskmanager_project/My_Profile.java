@@ -1,9 +1,10 @@
 package com.example.taskmanager_project;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.icu.text.SimpleDateFormat;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -12,9 +13,15 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -23,20 +30,26 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.squareup.picasso.Picasso;
+import com.google.firebase.storage.UploadTask;
+
+import java.util.Date;
+import java.util.Locale;
+
 
 public class My_Profile extends AppCompatActivity {
 
+
+    Uri imageUri;
+    StorageReference storageReference;
+    ProgressDialog progressDialog;
+    ImageView firebaseimage;
     EditText txtProfName, profOldPass, profNewPass, profConfirmPass;
     Spinner spinnerPosition;
-    Button btnImage, btnSaveUser, btnDeleteAccount, btnLogout, btnHome, bntSavePass;
+    Button btnSelectImage, btnUploadImage, btnSaveUser, btnDeleteAccount, btnLogout, btnHome, bntSavePass;
     private String role;
     FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
     DatabaseReference userDatabase = FirebaseDatabase.getInstance().getReference("users");
     String emailUser;
-    private static final int PICK_IMAGE_REQUEST = 1;
-    private ImageView topImage;
-    private Uri imageUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,20 +61,48 @@ public class My_Profile extends AppCompatActivity {
         profOldPass = findViewById(R.id.txtProfOldPass);
         profNewPass = findViewById(R.id.txtProfNewPass);
         profConfirmPass = findViewById(R.id.txtProfConfirmPass);
-        btnImage = findViewById(R.id.btnImage);
+        btnSelectImage = findViewById(R.id.btnSelectImage);
+        btnUploadImage = findViewById(R.id.btnUploadImage);
         btnSaveUser = findViewById(R.id.btnSaveUser);
         btnDeleteAccount = findViewById(R.id.btndeleteAccount);
         btnLogout = findViewById(R.id.btnLogout);
         bntSavePass = findViewById(R.id.bntSavePass);
-        topImage = findViewById(R.id.topImage);
+        firebaseimage = findViewById(R.id.topImage);
         btnHome = findViewById(R.id.btnHome);
 
-        // I commented this as it was in the method loaduserdata - maria
-        //if (currentUser != null) {
-        //  emailUser = currentUser.getEmail();
-        //} else {
-        //  emailUser = "Filed try again later";
-        // }
+        btnSelectImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectImage();
+            }
+        });
+
+        btnUploadImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                uploadImage();
+            }
+        });
+
+
+        if (currentUser != null) {
+            emailUser = currentUser.getEmail();
+            userDatabase.child(currentUser.getUid()).child("photoUrl").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DataSnapshot> task) {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        String photoUrl = task.getResult().getValue(String.class);
+                        if (photoUrl != null) {
+                            Uri photoUri = Uri.parse(photoUrl);
+                            new SaveImageHelper(firebaseimage).loadImage(photoUrl);
+                        }
+                    }
+                }
+            });
+        } else {
+            emailUser = "Filed try again later";
+        }
+
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(My_Profile.this,
                 R.array.roles_list, android.R.layout.simple_spinner_item);
@@ -79,7 +120,7 @@ public class My_Profile extends AppCompatActivity {
             }
         });
 
-        readUserData();
+        //  readUserData();
 
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,12 +191,75 @@ public class My_Profile extends AppCompatActivity {
             }
         });
 
-        btnImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openImageChooser();
-            }
-        });
+    }
+
+    private void uploadImage() {
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Uploading File....");
+        progressDialog.show();
+
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.CANADA);
+        Date now = new Date();
+        String fileName = formatter.format(now);
+        storageReference = FirebaseStorage.getInstance().getReference("images/" + fileName);
+
+
+        storageReference.putFile(imageUri)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                String imageUrl = uri.toString();
+                                firebaseimage.setImageURI(imageUri);
+                                Toast.makeText(My_Profile.this, "Successfully Uploaded", Toast.LENGTH_SHORT).show();
+                                if (progressDialog.isShowing())
+                                    progressDialog.dismiss();
+                                saveImageUrlToUserProfile(imageUrl);
+                            }
+                        });
+                        Toast.makeText(My_Profile.this, "Successfully Uploaded", Toast.LENGTH_SHORT).show();
+                        if (progressDialog.isShowing())
+                            progressDialog.dismiss();
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+
+                        if (progressDialog.isShowing())
+                            progressDialog.dismiss();
+                        Toast.makeText(My_Profile.this, "Failed to Upload", Toast.LENGTH_SHORT).show();
+
+
+                    }
+                });
+
+    }
+
+    private void saveImageUrlToUserProfile(String imageUrl) {
+        String userId = currentUser.getUid();
+        userDatabase.child(userId).child("photoUrl").setValue(imageUrl);
+    }
+
+    private void selectImage() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, 100);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 100 && data.getData() != null) {
+            imageUri = data.getData();
+            firebaseimage.setImageURI(imageUri);
+        }
     }
 
     private void updatePassword() {
@@ -188,7 +292,8 @@ public class My_Profile extends AppCompatActivity {
                         profNewPass.setText("");
                         profConfirmPass.setText("");
                     } else {
-                        Toast.makeText(My_Profile.this, "Password must be at least 6 characters.", Toast.LENGTH_SHORT).show();
+                        task.getException().printStackTrace();
+                        Toast.makeText(My_Profile.this, "Wrong password, try again", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -198,7 +303,6 @@ public class My_Profile extends AppCompatActivity {
             Toast.makeText(My_Profile.this, "No user is currently logged in", Toast.LENGTH_SHORT).show();
             return;
         }
-
         String userId = currentUser.getUid();
         userDatabase.child(userId).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
@@ -208,19 +312,6 @@ public class My_Profile extends AppCompatActivity {
                     User user = snapshot.getValue(User.class);
                     if (user != null) {
                         txtProfName.setText(user.getUserName());
-
-                        String photoUrl = user.getPhotoUrl();
-                        Log.d("ImageUri", "Loaded URI: " + photoUrl);
-
-                        if (photoUrl != null && !photoUrl.isEmpty()) {
-                            Picasso.get()
-                                    .load(photoUrl)
-                                    .placeholder(R.drawable.placeholder_image)
-                                    .error(R.drawable.error_image)
-                                    .into(topImage);
-                        } else {
-                            topImage.setImageResource(R.drawable.placeholder_image);
-                        }
 
                         setSpinnerRole(user.getRole());
                     }
@@ -269,11 +360,6 @@ public class My_Profile extends AppCompatActivity {
                             user.setRole(updatedRole);
                         }
 
-                        if (imageUri != null) {
-                            String imageUrl = imageUri.toString();
-                            user.setPhotoUrl(imageUrl);
-                        }
-
                         userDatabase.child(userId).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
@@ -289,38 +375,5 @@ public class My_Profile extends AppCompatActivity {
             }
         });
     }
-
-    private void openImageChooser() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            imageUri = data.getData();
-            topImage.setImageURI(imageUri);
-            uploadImageToFirebase();
-        }
-    }
-
-    private void uploadImageToFirebase() {
-        if (imageUri != null) {
-            String userId = currentUser.getUid();
-            StorageReference storageRef = FirebaseStorage.getInstance().getReference("profile_images/" + userId);
-            storageRef.putFile(imageUri).addOnSuccessListener(taskSnapshot -> {
-                storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                    String imageUrl = uri.toString();
-
-                    userDatabase.child(userId).child("photoUrl").setValue(imageUrl);
-                });
-            });
-        }
-    }
-
-
 
 }

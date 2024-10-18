@@ -4,13 +4,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.widget.TextView;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -20,14 +25,15 @@ import com.google.firebase.database.ValueEventListener;
 
 public class Home extends AppCompatActivity {
 
-    Button editProfile, taskManagment, users, roles, logout;
-    Spinner spinner;
-    TextView textName, infoText;
+    TextView textName, infoText, positiontxt;
+    Button editProfile, taskManagement, users, roles, logout;
     ImageView imgProfile;
     private FirebaseAuth auth;
     private FirebaseUser currentUser;
     private DatabaseReference userDatabase;
     private String currentUserRole;
+    String emailUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,14 +44,47 @@ public class Home extends AppCompatActivity {
         userDatabase = FirebaseDatabase.getInstance().getReference("users");
 
         editProfile = findViewById(R.id.btnEditProfile);
-        taskManagment = findViewById(R.id.btnTasks);
+        taskManagement = findViewById(R.id.btnTasks);
         users = findViewById(R.id.btnUsers);
         roles = findViewById(R.id.btnRoles);
         logout = findViewById(R.id.logout);
-        //spinner = findViewById(R.id.spinner);
         textName = findViewById(R.id.nametxt);
         infoText = findViewById(R.id.personaltxt);
         imgProfile = findViewById(R.id.topImage);
+        positiontxt = findViewById(R.id.positiontxt);
+
+
+        if (currentUser != null) {
+            emailUser = currentUser.getEmail();
+
+            userDatabase.child(currentUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DataSnapshot> task) {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        DataSnapshot dataSnapshot = task.getResult();
+                        String email = dataSnapshot.child("email").getValue(String.class);
+                        String userName = dataSnapshot.child("userName").getValue(String.class);
+                        String photoUrl = dataSnapshot.child("photoUrl").getValue(String.class);
+                        String role = dataSnapshot.child("role").getValue(String.class);
+
+                        if (photoUrl != null) {
+                            new SaveImageHelper(imgProfile).loadImage(photoUrl);
+                        }
+
+                        textName.setText("Welcome " + (userName != null ? userName : "Guest"));
+                        infoText.setText("Email: " + (email != null ? email : "Not provided"));
+                        positiontxt.setText("Position: " + (role != null ? role : "Not provided"));
+                    } else {
+                        textName.setText("Error fetching user data.");
+                    }
+                }
+            });
+
+        } else {
+            emailUser = "Failed, try again later";
+            textName.setText("User not logged in.");
+        }
+
 
         users.setVisibility(View.GONE);
         roles.setVisibility(View.GONE);
@@ -64,7 +103,7 @@ public class Home extends AppCompatActivity {
             }
         });
 
-        taskManagment.setOnClickListener(new View.OnClickListener() {
+        taskManagement.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Home.this,

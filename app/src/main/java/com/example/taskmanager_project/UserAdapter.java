@@ -7,7 +7,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import com.squareup.picasso.Picasso;
 import java.util.List;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder> {
@@ -31,15 +30,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         holder.nameTextView.setText(user.getUserName());
         holder.emailTextView.setText(user.getEmail());
         holder.roleTextView.setText(user.getRole());
-
-        // Cargar la imagen desde la URL usando Picasso
-        if (user.getPhotoUrl() != null && !user.getPhotoUrl().isEmpty()) {
-            Picasso.get()
-                    .load(user.getPhotoUrl())
-                    .placeholder(R.drawable.placeholder_image) // Imagen por defecto mientras se carga
-                    .error(R.drawable.error_image)             // Imagen en caso de error
-                    .into(holder.photoImageView);
-        }
     }
 
     @Override
