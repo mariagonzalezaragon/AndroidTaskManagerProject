@@ -45,7 +45,7 @@ public class My_Profile extends AppCompatActivity {
     ImageView firebaseimage;
     EditText txtProfName, profOldPass, profNewPass, profConfirmPass;
     Spinner spinnerPosition;
-    Button btnSelectImage, btnUploadImage, btnSaveUser, btnDeleteAccount, btnLogout, bntSavePass;
+    Button btnSelectImage, btnUploadImage, btnSaveUser, btnDeleteAccount, btnLogout, btnHome, bntSavePass;
     private String role;
     FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
     DatabaseReference userDatabase = FirebaseDatabase.getInstance().getReference("users");
@@ -68,7 +68,7 @@ public class My_Profile extends AppCompatActivity {
         btnLogout = findViewById(R.id.btnLogout);
         bntSavePass = findViewById(R.id.bntSavePass);
         firebaseimage = findViewById(R.id.topImage);
-
+        btnHome = findViewById(R.id.btnHome);
 
         btnSelectImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,6 +127,16 @@ public class My_Profile extends AppCompatActivity {
             public void onClick(View v) {
                 FirebaseAuth.getInstance().signOut();
                 Intent intent = new Intent(My_Profile.this, Login.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        btnHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(My_Profile.this,
+                        Home.class);
                 startActivity(intent);
                 finish();
             }

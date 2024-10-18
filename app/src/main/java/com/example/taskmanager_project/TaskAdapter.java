@@ -36,6 +36,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         Task task = taskList.get(position);
         holder.taskNameTextView.setText(task.getTaskName());
         holder.dueDateTextView.setText(task.getDueDate());
+        holder.userTextView.setText(task.getUserName()); // Add this line to display the user's name
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(holder.itemView.getContext(),
                 R.array.task_status, android.R.layout.simple_spinner_item);
@@ -52,8 +53,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             // Delete the task from Firebase
             taskRef.child(task.getId()).removeValue().addOnCompleteListener(taskDelete -> {
                 if (taskDelete.isSuccessful()) {
-                    // Notify the adapter directly instead of removing the item from the list again
-                    int pos = holder.getAdapterPosition(); // Get the updated position
+                    int pos = holder.getAdapterPosition();
                     if (pos != RecyclerView.NO_POSITION) {
                         taskList.remove(pos);
                         notifyItemRemoved(pos);
@@ -72,7 +72,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     }
 
     public static class TaskViewHolder extends RecyclerView.ViewHolder {
-        TextView taskNameTextView, dueDateTextView;
+        TextView taskNameTextView, dueDateTextView, userTextView; // Add userTextView here
         Spinner statusSpinner;
         Button saveButton, deleteButton;
 
@@ -80,6 +80,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             super(itemView);
             taskNameTextView = itemView.findViewById(R.id.taskNameTextView);
             dueDateTextView = itemView.findViewById(R.id.dueDateTextView);
+            userTextView = itemView.findViewById(R.id.userTextView); // Initialize userTextView here
             statusSpinner = itemView.findViewById(R.id.statusSpinner);
             saveButton = itemView.findViewById(R.id.saveButton);
             deleteButton = itemView.findViewById(R.id.deleteButton);

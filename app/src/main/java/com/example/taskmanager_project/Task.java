@@ -5,19 +5,31 @@ public class Task {
     private String taskName;
     private String dueDate;
     private String status;
+    private String userId;
+    private String userName;
 
-    // Default constructor required for Firebase
-    public Task() {
-    }
 
-    // Constructor
-    public Task(String taskName, String dueDate, String status) {
+    // Add this field to store the user's name
+
+    // Default constructor
+    public Task() {}
+
+    // Parameterized constructor
+    public Task(String taskName, String dueDate, String status, String userId, String userName) {
         this.taskName = taskName;
         this.dueDate = dueDate;
         this.status = status;
+        this.userId = userId;
+        this.userName = userName;  // Set the user name
+    }
+    public String getUserName() {
+        return userName;
     }
 
-    // Getter and setter for taskName
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+    // Getters and setters
     public String getTaskName() {
         return taskName;
     }
@@ -26,7 +38,6 @@ public class Task {
         this.taskName = taskName;
     }
 
-    // Getter and setter for dueDate
     public String getDueDate() {
         return dueDate;
     }
@@ -35,7 +46,6 @@ public class Task {
         this.dueDate = dueDate;
     }
 
-    // Getter and setter for status
     public String getStatus() {
         return status;
     }
@@ -44,7 +54,14 @@ public class Task {
         this.status = status;
     }
 
-    // Getter and setter for id
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
     public String getId() {
         return id;
     }

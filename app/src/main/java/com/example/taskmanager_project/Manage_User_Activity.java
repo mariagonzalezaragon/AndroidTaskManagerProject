@@ -2,9 +2,10 @@ package com.example.taskmanager_project;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.util.Log;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,59 +15,82 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
-import java.util.List;
 
 public class Manage_User_Activity extends AppCompatActivity {
 
-    private RecyclerView recyclerView;
+    private RecyclerView recyclerViewUsers;
     private UserAdapter userAdapter;
-    private List<User> userList;
-    private Button btnAddUser;
-    private DatabaseReference userDatabase;
+    private Button btnAddUser, btnHome; // Añadir el botón Home
+    private DatabaseReference databaseReference;
+    private ArrayList<User> userList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_user);
 
-        recyclerView = findViewById(R.id.recycler_view_users);
+        recyclerViewUsers = findViewById(R.id.recycler_view_users);
         btnAddUser = findViewById(R.id.btnAddUser);
+        btnHome = findViewById(R.id.btnHome); // Enlazar el botón Home
 
-        userDatabase = FirebaseDatabase.getInstance().getReference("users");
+        // Configurar el RecyclerView
+        recyclerViewUsers.setLayoutManager(new LinearLayoutManager(this));
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        userList = new ArrayList<>();
+        // Inicializar Firebase Database
+        databaseReference = FirebaseDatabase.getInstance().getReference("users");
+
+        // Cargar los datos desde Firebase
+        loadUsersFromDatabase();
+
+        // Configurar el adaptador
         userAdapter = new UserAdapter(userList);
-        recyclerView.setAdapter(userAdapter);
+        recyclerViewUsers.setAdapter(userAdapter);
 
-        loadUsersFromFirebase();
+        // Funcionalidad del botón "Agregar Usuario"
+        btnAddUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Iniciar la actividad de registro
+                Intent intent = new Intent(Manage_User_Activity.this, Register.class);
+                startActivity(intent);
+            }
+        });
 
-        btnAddUser.setOnClickListener(v -> {
-            Intent intent = new Intent(Manage_User_Activity.this, Register.class);
-            startActivity(intent);
+        // Funcionalidad del botón "Home"
+        btnHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Ir a la actividad Home
+                Intent intent = new Intent(Manage_User_Activity.this, Home.class);
+                startActivity(intent);
+                finish(); // Cierra la actividad actual para no volver con el botón de retroceso
+            }
         });
     }
 
-    private void loadUsersFromFirebase() {
-        userDatabase.addValueEventListener(new ValueEventListener() {
+    // Método para cargar usuarios desde Firebase Database
+    private void loadUsersFromDatabase() {
+        databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                userList.clear();
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                userList.clear(); // Limpiar la lista antes de agregar nuevos datos
 
-                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                    User user = userSnapshot.getValue(User.class);
-
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    // Obtener los datos del usuario desde Firebase
+                    User user = snapshot.getValue(User.class);
                     if (user != null) {
-                        userList.add(user);
+                        userList.add(user); // Añadir el usuario a la lista
                     }
                 }
 
+                // Notificar al adaptador que los datos han cambiado
                 userAdapter.notifyDataSetChanged();
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e("Firebase", "Error loading users: " + databaseError.getMessage());
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Manejar errores de la base de datos
+                Log.e("Manage_User_Activity", "Error al cargar usuarios", databaseError.toException());
             }
         });
     }

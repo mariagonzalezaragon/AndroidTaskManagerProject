@@ -23,12 +23,10 @@
             android:exported="false" />
         <activity
             android:name=".Manage_User_Activity"
-            android:exported="false" />
+            android:exported="false">
+        </activity>
         <activity
             android:name=".ActivityDetail"
-            android:exported="false" />
-        <activity
-            android:name=".Dashboard"
             android:exported="false" />
         <activity
             android:name=".New_Activity"
@@ -50,7 +48,6 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
