@@ -292,7 +292,8 @@ public class My_Profile extends AppCompatActivity {
                         profNewPass.setText("");
                         profConfirmPass.setText("");
                     } else {
-                        Toast.makeText(My_Profile.this, "Password update filed, try again later", Toast.LENGTH_SHORT).show();
+                        task.getException().printStackTrace();
+                        Toast.makeText(My_Profile.this, "Wrong password, try again", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -357,11 +358,6 @@ public class My_Profile extends AppCompatActivity {
                         }
                         if (!updatedRole.equals(user.getRole())) {
                             user.setRole(updatedRole);
-                        }
-
-                        if (imageUri != null) {
-                            String imageUrl = imageUri.toString();
-                            user.setPhotoUrl(imageUrl);
                         }
 
                         userDatabase.child(userId).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
