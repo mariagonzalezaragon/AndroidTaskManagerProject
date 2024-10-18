@@ -88,7 +88,7 @@ public class Home extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Home.this,
-                        Manage_Roles_Activity.class);
+                        Roles_Activity.class);
                 startActivity(intent);
                 finish();
             }
@@ -134,5 +134,4 @@ public class Home extends AppCompatActivity {
     public String getCurrentUserRole() {
         return currentUserRole; // Add this method to access the role
     }
-
 }

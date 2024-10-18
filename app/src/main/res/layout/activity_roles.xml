@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Campo para ingresar el nombre del rol -->
+    <EditText
+        android:id="@+id/edtRoleName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Role Name"
+        android:padding="10dp" />
+
+    <!-- Campo para ingresar la descripción del rol -->
+    <EditText
+        android:id="@+id/edtRoleDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Role Description"
+        android:padding="10dp"
+        android:layout_marginTop="10dp" />
+
+    <!-- CheckBox para acceso completo -->
+    <CheckBox
+        android:id="@+id/chkFullAccess"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Full Access"
+        android:layout_marginTop="10dp" />
+
+    <!-- Botón para crear el rol -->
+    <Button
+        android:id="@+id/btnCreateRole"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create Role"
+        android:layout_marginTop="20dp" />
+
+    <!-- Botón para regresar a Home -->
+    <Button
+        android:id="@+id/btnBackToHome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Back to Home"
+        android:layout_marginTop="20dp" />
+</LinearLayout>
