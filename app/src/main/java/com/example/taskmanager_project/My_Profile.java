@@ -282,7 +282,7 @@ public class My_Profile extends AppCompatActivity {
                         profNewPass.setText("");
                         profConfirmPass.setText("");
                     } else {
-                        Toast.makeText(My_Profile.this, "Password must be at least 6 characters.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(My_Profile.this, "Password update filed, try again later", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -292,7 +292,6 @@ public class My_Profile extends AppCompatActivity {
             Toast.makeText(My_Profile.this, "No user is currently logged in", Toast.LENGTH_SHORT).show();
             return;
         }
-
         String userId = currentUser.getUid();
         userDatabase.child(userId).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
