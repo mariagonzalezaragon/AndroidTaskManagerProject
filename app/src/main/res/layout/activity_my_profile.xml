@@ -14,7 +14,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:text="Personal Information"
-        android:textStyle="bold"/>
+        android:textSize="18dp"
+        android:textStyle="italic"/>
 
 
     <LinearLayout
@@ -24,14 +25,15 @@
         android:gravity="center_horizontal">
 
         <ImageView
-            android:layout_marginTop="40dp"
             android:id="@+id/topImage"
             android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_height="145dp"
+            android:layout_marginTop="20dp"
             android:contentDescription="topImage"
-            android:src="@drawable/ic_launcher_foreground"
-            android:scaleType="centerCrop" />
-    <LinearLayout
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_launcher_foreground" />
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -42,6 +44,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="80dp"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/purple"
             android:text="Select Image" />
 
         <Button
@@ -49,7 +53,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-
+            android:textColor="@color/white"
+            android:backgroundTint="@color/purple"
             android:text="Uplad Image" />
     </LinearLayout>
     </LinearLayout>
@@ -104,13 +109,15 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="Save Changes"
+        android:backgroundTint="@color/purple"
         android:textColor="@color/white" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Account Information"
-        android:textStyle="bold"
+        android:textSize="18dp"
+        android:textStyle="italic"
         android:layout_marginTop="20dp"/>
 
     <LinearLayout
@@ -190,6 +197,7 @@
         android:layout_marginRight="20dp"
         android:text="Save Changes"
         android:textColor="@color/white"
+        android:backgroundTint="@color/purple"
         android:layout_gravity="center_horizontal"/>
 
     <Button
@@ -199,33 +207,32 @@
         android:text="Delete Account"
         android:layout_marginTop="10dp"
         android:textColor="@color/white"
+        android:backgroundTint="@color/purple"
         android:layout_gravity="center_horizontal"/>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:gravity="center"
-        android:paddingTop="30dp">
+        android:gravity="center">
+>
+
         <Button
             android:id="@+id/btnHome"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/purple"
             android:text="Home"
-            android:layout_marginTop="20dp"
-            android:layout_marginRight="10dp"
-            android:textColor="@color/white"
-            android:layout_gravity="center_horizontal"/>
+            android:textColor="@color/white" />
         <Button
             android:id="@+id/btnLogout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Log Out"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="10dp"
+            android:text="Logout"
+            android:layout_marginLeft="50dp"
             android:textColor="@color/white"
-            android:layout_gravity="center_horizontal"/>
+            android:backgroundTint="@color/purple" />
 
 
     </LinearLayout>
