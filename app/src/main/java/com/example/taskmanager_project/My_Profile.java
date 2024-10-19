@@ -70,6 +70,7 @@ public class My_Profile extends AppCompatActivity {
         firebaseimage = findViewById(R.id.topImage);
         btnHome = findViewById(R.id.btnHome);
 
+
         btnSelectImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -87,6 +88,7 @@ public class My_Profile extends AppCompatActivity {
 
         if (currentUser != null) {
             emailUser = currentUser.getEmail();
+            readUserData();
             userDatabase.child(currentUser.getUid()).child("photoUrl").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DataSnapshot> task) {
@@ -95,7 +97,9 @@ public class My_Profile extends AppCompatActivity {
                         if (photoUrl != null) {
                             Uri photoUri = Uri.parse(photoUrl);
                             new SaveImageHelper(firebaseimage).loadImage(photoUrl);
+
                         }
+
                     }
                 }
             });
@@ -312,7 +316,6 @@ public class My_Profile extends AppCompatActivity {
                     User user = snapshot.getValue(User.class);
                     if (user != null) {
                         txtProfName.setText(user.getUserName());
-
                         setSpinnerRole(user.getRole());
                     }
                 } else {
