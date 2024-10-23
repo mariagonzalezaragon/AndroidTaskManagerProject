@@ -47,6 +47,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         holder.saveButton.setOnClickListener(v -> {
             task.setStatus(holder.statusSpinner.getSelectedItem().toString());
             taskRef.child(task.getId()).setValue(task);
+
         });
 
         holder.deleteButton.setOnClickListener(v -> {

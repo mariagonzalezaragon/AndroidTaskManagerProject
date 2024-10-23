@@ -98,7 +98,22 @@ public class New_Activity extends AppCompatActivity {
             String userName = selectedUser.getUserName();
             if ("Project Manager".equals(userRole) || "Product Owner".equals(userRole)) {
                 Task task = new Task(taskName, dueDate, status, userId, userName);
-                taskRef.push().setValue(task);  // Save to Firebase
+                taskRef.push().setValue(task).addOnCompleteListener(taskSave -> {
+                    if (taskSave.isSuccessful()) {
+
+                        Toast.makeText(this, "Task added successfully", Toast.LENGTH_SHORT).show();
+
+                        taskNameEditText.setText("");
+                        dueDateEditText.setText("");
+                        statusSpinner.setSelection(0);
+                        userSpinner.setSelection(0);
+                    } else {
+                        Toast.makeText(this, "Failed to add task", Toast.LENGTH_SHORT).show();
+                    }
+                });  // Save to Firebase
+
+
+
             }else {
                 // Handle the case where the user does not have the right to add tasks
                 Toast.makeText(this, "You do not have permission to add tasks.", Toast.LENGTH_SHORT).show();
