@@ -47,7 +47,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             nameTextView = itemView.findViewById(R.id.nameTextView);
             emailTextView = itemView.findViewById(R.id.emailTextView);
             roleTextView = itemView.findViewById(R.id.roleTextView);
-            photoImageView = itemView.findViewById(R.id.photoImageView);
+            
         }
     }
 }
