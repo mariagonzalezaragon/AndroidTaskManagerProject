@@ -16,7 +16,6 @@
         android:text="Personal Information"
         android:textStyle="bold"/>
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -31,29 +30,29 @@
             android:contentDescription="topImage"
             android:src="@drawable/ic_launcher_foreground"
             android:scaleType="centerCrop" />
-    <LinearLayout
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center">
-        <Button
-            android:id="@+id/btnSelectImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="80dp"
-            android:text="Select Image" />
 
-        <Button
-            android:id="@+id/btnUploadImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
+            <Button
+                android:id="@+id/btnSelectImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="80dp"
+                android:text="Select Image" />
 
-            android:text="Uplad Image" />
+            <Button
+                android:id="@+id/btnUploadImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:text="Upload Image" />
+        </LinearLayout>
     </LinearLayout>
-    </LinearLayout>
-
 
     <!-- Row for Name -->
     <LinearLayout
@@ -76,7 +75,6 @@
             android:layout_weight="2"/>
     </LinearLayout>
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -86,7 +84,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Position : "
+            android:text="Role :"
             android:textStyle="bold"/>
 
         <Spinner
@@ -94,9 +92,8 @@
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_weight="2"
-            />
+            android:spinnerMode="dropdown"/>
     </LinearLayout>
-
 
     <Button
         android:id="@+id/btnSaveUser"
@@ -130,10 +127,8 @@
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_weight="2"
-            android:inputType="textPassword"
-            />
+            android:inputType="textPassword"/>
     </LinearLayout>
-
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -152,8 +147,7 @@
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_weight="2"
-            android:inputType="textPassword"
-            />
+            android:inputType="textPassword"/>
     </LinearLayout>
 
     <LinearLayout
@@ -173,33 +167,34 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:inputType="textPassword"
-            />
+            android:inputType="textPassword"/>
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_gravity="center"
         android:layout_marginTop="10dp">
-    <Button
-        android:id="@+id/bntSavePass"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="20dp"
-        android:text="Save Changes"
-        android:textColor="@color/white"
-        android:layout_gravity="center_horizontal"/>
 
-    <Button
-        android:id="@+id/btndeleteAccount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Delete Account"
-        android:layout_marginTop="10dp"
-        android:textColor="@color/white"
-        android:layout_gravity="center_horizontal"/>
+        <Button
+            android:id="@+id/bntSavePass"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp"
+            android:text="Save Changes"
+            android:textColor="@color/white"
+            android:layout_gravity="center_horizontal"/>
+
+        <Button
+            android:id="@+id/btndeleteAccount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Delete Account"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/white"
+            android:layout_gravity="center_horizontal"/>
     </LinearLayout>
 
     <LinearLayout
@@ -208,6 +203,7 @@
         android:orientation="horizontal"
         android:gravity="center"
         android:paddingTop="30dp">
+
         <Button
             android:id="@+id/btnHome"
             android:layout_width="wrap_content"
@@ -217,6 +213,7 @@
             android:layout_marginRight="10dp"
             android:textColor="@color/white"
             android:layout_gravity="center_horizontal"/>
+
         <Button
             android:id="@+id/btnLogout"
             android:layout_width="wrap_content"
@@ -226,8 +223,6 @@
             android:layout_marginLeft="10dp"
             android:textColor="@color/white"
             android:layout_gravity="center_horizontal"/>
-
-
     </LinearLayout>
 
 </LinearLayout>

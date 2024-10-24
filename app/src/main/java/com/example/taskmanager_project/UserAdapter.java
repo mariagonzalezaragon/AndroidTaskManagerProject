@@ -40,14 +40,13 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     public static class UserViewHolder extends RecyclerView.ViewHolder {
 
         TextView nameTextView, emailTextView, roleTextView;
-        ImageView photoImageView;
+
 
         public UserViewHolder(@NonNull View itemView) {
             super(itemView);
             nameTextView = itemView.findViewById(R.id.nameTextView);
             emailTextView = itemView.findViewById(R.id.emailTextView);
             roleTextView = itemView.findViewById(R.id.roleTextView);
-            photoImageView = itemView.findViewById(R.id.photoImageView);
         }
     }
 }

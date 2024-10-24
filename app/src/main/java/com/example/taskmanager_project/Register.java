@@ -13,47 +13,39 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Register extends AppCompatActivity {
 
     EditText nameEditText, emailEditText, passwordEditText, confirmPasswordEditText;
-    private String selectedUserId;
-    private String role;
+    private String selectedRole;
     private String photoUrl = "https://example.com/profile.jpg";
     Button registerButton, loginregButton;
-    List<User> userList;
+    List<String> rolesList;
     private DatabaseReference userDatabase;
     FirebaseAuth firebaseAuth;
+    FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        // Spinner for role selection
-        Spinner spinner = findViewById(R.id.spinner);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.roles_list, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                role = parentView.getItemAtPosition(position).toString();
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-            }
-        });
+        db = FirebaseFirestore.getInstance();
+        userDatabase = FirebaseDatabase.getInstance().getReference("users");
+        firebaseAuth = FirebaseAuth.getInstance();
 
         nameEditText = findViewById(R.id.name);
         emailEditText = findViewById(R.id.emailregister);
@@ -61,86 +53,107 @@ public class Register extends AppCompatActivity {
         confirmPasswordEditText = findViewById(R.id.confirmpasswordregister);
         registerButton = findViewById(R.id.registerbtn);
         loginregButton = findViewById(R.id.loginregbtn);
-        userDatabase = FirebaseDatabase.getInstance().getReference("users");
-        firebaseAuth = FirebaseAuth.getInstance();
 
-        userList = new ArrayList<>();
-
-        loginregButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Register.this,
-                        Login.class);
-                startActivity(intent);
-                finish();
-            }
-        });
-
+        rolesList = new ArrayList<>();
+        Spinner spinner = findViewById(R.id.spinner);
+        loadRoles(spinner);
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 registerUser();
+            }
+        });
 
+        loginregButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Register.this, Login.class);
+                startActivity(intent);
+                finish();
             }
         });
     }
 
+    private void loadRoles(Spinner spinner) {
+        db.collection("roles")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                String roleName = document.getString("roleName");
+                                rolesList.add(roleName);
+                            }
+                            ArrayAdapter<String> adapter = new ArrayAdapter<>(Register.this, android.R.layout.simple_spinner_item, rolesList);
+                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            spinner.setAdapter(adapter);
+                        } else {
+                            Toast.makeText(Register.this, "Error obteniendo roles", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
 
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                selectedRole = parentView.getItemAtPosition(position).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                selectedRole = null;
+            }
+        });
+    }
 
     private void registerUser() {
         String email = emailEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
         String confirmPassword = confirmPasswordEditText.getText().toString().trim();
         String userName = nameEditText.getText().toString().trim();
-        String selectedRole = role;
-        String role;
 
-        if(TextUtils.isEmpty(userName) || TextUtils.isEmpty(email) || TextUtils.isEmpty(password) || TextUtils.isEmpty(confirmPassword)){
+        if (TextUtils.isEmpty(userName) || TextUtils.isEmpty(email) || TextUtils.isEmpty(password) || TextUtils.isEmpty(confirmPassword)) {
             Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             emailEditText.setError("Invalid email. Please provide a valid email address");
             emailEditText.requestFocus();
             return;
         }
 
-        if(password.length() < 6){
+        if (password.length() < 6) {
             passwordEditText.setError("Password should contain at least 6 characters");
             passwordEditText.requestFocus();
             return;
         }
 
-        if(!password.equals(confirmPassword)){
+        if (!password.equals(confirmPassword)) {
             confirmPasswordEditText.setError("Password and confirmation password do not match");
             confirmPasswordEditText.requestFocus();
             return;
         }
 
-        if ("Select a role".equals(selectedRole)) {
+        if (selectedRole == null || "Select a role".equals(selectedRole)) {
             Toast.makeText(this, "Please select a valid role", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        //If validations passed successfully - Then we will push the DB
         firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()){
+                if (task.isSuccessful()) {
                     Toast.makeText(Register.this, "User successfully registered", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(Register.this, Home.class));
-                    // And create users database
                     createUser(email, userName, selectedRole, photoUrl);
+                    startActivity(new Intent(Register.this, Home.class));
                     finish();
-                }
-                else{
-                    Toast.makeText(Register.this, "Unable to complete registration. Please try once more", Toast.LENGTH_SHORT).show();
-
+                } else {
+                    Toast.makeText(Register.this, "Unable to complete registration. Please try again", Toast.LENGTH_SHORT).show();
                 }
             }
         });
-
     }
 
     private void createUser(String email, String userName, String selectedRole, String photoUrl) {
@@ -161,8 +174,4 @@ public class Register extends AppCompatActivity {
             }
         });
     }
-
-
-
-
 }

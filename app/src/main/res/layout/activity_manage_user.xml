@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     android:padding="16dp">
 
-    <!-- RecyclerView para la lista de usuarios -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_users"
         android:layout_width="match_parent"
@@ -13,7 +12,6 @@
         android:layout_alignParentTop="true"
         android:layout_weight="1"/>
 
-    <!-- Contenedor para los botones -->
     <LinearLayout
         android:id="@+id/buttons_layout"
         android:layout_width="match_parent"
@@ -23,7 +21,6 @@
         android:gravity="center_horizontal"
         android:layout_marginTop="8dp">
 
-        <!-- Botón para agregar un nuevo usuario -->
         <Button
             android:id="@+id/btnAddUser"
             android:layout_width="wrap_content"
@@ -33,7 +30,6 @@
             android:layout_marginEnd="8dp"
             android:padding="10dp"/>
 
-        <!-- Botón para regresar a Home -->
         <Button
             android:id="@+id/btnHome"
             android:layout_width="wrap_content"

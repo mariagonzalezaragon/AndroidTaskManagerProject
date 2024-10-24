@@ -5,13 +5,6 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <ImageView
-        android:id="@+id/photoImageView"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_gravity="center"
-        android:src="@drawable/placeholder_image" /> <!-- Imagen por defecto -->
-
     <TextView
         android:id="@+id/nameTextView"
         android:layout_width="wrap_content"
