@@ -52,6 +52,6 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.4.0"))
     implementation("com.google.firebase:firebase-database")
     implementation ("com.github.d-max:spots-dialog:0.7@aar")
-
+    implementation("com.squareup.picasso:picasso:2.71828")
 
 }

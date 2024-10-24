@@ -2,22 +2,30 @@ package com.example.taskmanager_project;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Roles_Activity extends AppCompatActivity {
 
-    private EditText edtRoleName, edtRoleDescription;
-    private CheckBox chkFullAccess;
-    private Button btnCreateRole, btnBackToHome;
+    private ListView rolesListView;
+    private EditText editTextRoleName, editTextRoleDescription;
+    private Button buttonAddRole, buttonBack;
+    private List<Role> roleList;
+    private RoleAdapter roleAdapter;
     private DatabaseReference rolesDatabase;
 
     @Override
@@ -25,58 +33,68 @@ public class Roles_Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_roles);
 
+        rolesListView = findViewById(R.id.rolesListView);
+        editTextRoleName = findViewById(R.id.editTextRoleName);
+        editTextRoleDescription = findViewById(R.id.editTextRoleDescription);
+        buttonAddRole = findViewById(R.id.buttonAddRole);
+        buttonBack = findViewById(R.id.buttonBack);
+
+        roleList = new ArrayList<>();
+        roleAdapter = new RoleAdapter(this, roleList);
+        rolesListView.setAdapter(roleAdapter);
+
         rolesDatabase = FirebaseDatabase.getInstance().getReference("Roles");
 
-        edtRoleName = findViewById(R.id.edtRoleName);
-        edtRoleDescription = findViewById(R.id.edtRoleDescription);
-        chkFullAccess = findViewById(R.id.chkFullAccess);
-        btnCreateRole = findViewById(R.id.btnCreateRole);
-        btnBackToHome = findViewById(R.id.btnBackToHome);
+        loadRoles();
 
-        // Crear un nuevo rol cuando se haga clic en el botón
-        btnCreateRole.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String roleName = edtRoleName.getText().toString().trim();
-                String roleDescription = edtRoleDescription.getText().toString().trim();
-                boolean fullAccess = chkFullAccess.isChecked(); // Obtener el valor del CheckBox
+        buttonAddRole.setOnClickListener(view -> addRole());
 
-                if (!roleName.isEmpty()) {
-                    createRole(roleName, roleDescription, fullAccess);
-                } else {
-                    Toast.makeText(Roles_Activity.this, "Please fill in the role name", Toast.LENGTH_SHORT).show();
-                }
-            }
+        // Acción para regresar a Home cuando se presione el botón "Back"
+        buttonBack.setOnClickListener(view -> {
+            Intent intent = new Intent(Roles_Activity.this, Home.class);
+            startActivity(intent);
+            finish();  // Cierra la actividad actual
         });
+    }
 
-        // Botón para regresar a Home
-        btnBackToHome.setOnClickListener(new View.OnClickListener() {
+    private void loadRoles() {
+        rolesDatabase.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onClick(View v) {
-                // Regresar a la actividad Home
-                Intent intent = new Intent(Roles_Activity.this, Home.class);
-                startActivity(intent);
-                finish(); // Finalizar la actividad actual
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                roleList.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Role role = snapshot.getValue(Role.class);
+                    roleList.add(role);
+                }
+                roleAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(Roles_Activity.this, "Error loading roles", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    // Método para crear un rol y agregarlo a Firebase
-    private void createRole(String roleName, String roleDescription, boolean fullAccess) {
-        // Generar un nuevo roleId automáticamente usando push()
+    private void addRole() {
+        String roleName = editTextRoleName.getText().toString().trim();
+        String roleDescription = editTextRoleDescription.getText().toString().trim();
+
+        if (roleName.isEmpty() || roleDescription.isEmpty()) {
+            Toast.makeText(this, "Please fill in both fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         String roleId = rolesDatabase.push().getKey();
+        Role newRole = new Role(roleId, roleName, roleDescription, true);
 
-        Role newRole = new Role(roleId, roleName, roleDescription, fullAccess);
-
-        // Guardar el nuevo rol en Firebase
         rolesDatabase.child(roleId).setValue(newRole).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                Toast.makeText(Roles_Activity.this, "Role created successfully", Toast.LENGTH_SHORT).show();
-                edtRoleName.setText("");
-                edtRoleDescription.setText("");
-                chkFullAccess.setChecked(false); // Restablecer el CheckBox
+                Toast.makeText(Roles_Activity.this, "Role added", Toast.LENGTH_SHORT).show();
+                editTextRoleName.setText("");
+                editTextRoleDescription.setText("");
             } else {
-                Toast.makeText(Roles_Activity.this, "Failed to create role", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Roles_Activity.this, "Failed to add role", Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -1,64 +1,112 @@
 package com.example.taskmanager_project;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
-public class RoleAdapter extends RecyclerView.Adapter<RoleAdapter.RoleViewHolder> {
+public class RoleAdapter extends android.widget.ArrayAdapter<Role> {
 
+    private Context context;
     private List<Role> roleList;
-    private OnDeleteClickListener deleteClickListener;
+    private DatabaseReference rolesDatabase;
+    private DatabaseReference usersDatabase;
 
-    public RoleAdapter(List<Role> roleList, OnDeleteClickListener deleteClickListener) {
+    public RoleAdapter(@NonNull Context context, List<Role> roleList) {
+        super(context, R.layout.role_item, roleList);
+        this.context = context;
         this.roleList = roleList;
-        this.deleteClickListener = deleteClickListener;
+        this.rolesDatabase = FirebaseDatabase.getInstance().getReference("Roles");
+        this.usersDatabase = FirebaseDatabase.getInstance().getReference("users");
     }
 
     @NonNull
     @Override
-    public RoleViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.role_item, parent, false);
-        return new RoleViewHolder(view);
+    public View getView(int position, View convertView, ViewGroup parent) {
+        if (convertView == null) {
+            convertView = LayoutInflater.from(context).inflate(R.layout.role_item, parent, false);
+        }
+
+        Role role = roleList.get(position);
+
+        TextView textViewRoleName = convertView.findViewById(R.id.textViewRoleName);
+        EditText editTextRoleDescription = convertView.findViewById(R.id.editTextRoleDescription);
+        ImageButton buttonDeleteRole = convertView.findViewById(R.id.buttonDeleteRole);
+        ImageButton buttonEditRole = convertView.findViewById(R.id.buttonEditRole);
+
+        textViewRoleName.setText(role.getRoleName());
+        editTextRoleDescription.setText(role.getRoleDescription());
+
+        buttonDeleteRole.setOnClickListener(view -> checkIfRoleAssignedToUsers(role));
+
+        buttonEditRole.setOnClickListener(view -> {
+            String updatedName = textViewRoleName.getText().toString();
+            String updatedDescription = editTextRoleDescription.getText().toString();
+
+            Role updatedRole = new Role(role.getRoleId(), updatedName, updatedDescription, role.isFullAccess());
+            rolesDatabase.child(role.getRoleId()).setValue(updatedRole).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Toast.makeText(context, "Role updated", Toast.LENGTH_SHORT).show();
+                    notifyDataSetChanged();
+                } else {
+                    Toast.makeText(context, "Failed to update role", Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
+
+        return convertView;
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull RoleViewHolder holder, int position) {
-        Role role = roleList.get(position);
-        holder.roleName.setText(role.getRoleName());
-        holder.roleDescription.setText(role.getRoleDescription());
+    private void checkIfRoleAssignedToUsers(Role role) {
+        usersDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                boolean isAssigned = false;
 
-        // Set delete button click listener
-        holder.deleteButton.setOnClickListener(v -> {
-            deleteClickListener.onDeleteClick(role.getRoleId());
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    String userRole = snapshot.child("role").getValue(String.class);
+                    if (userRole != null && userRole.equals(role.getRoleName())) {
+                        isAssigned = true;
+                        break;
+                    }
+                }
+
+                if (isAssigned) {
+                    Toast.makeText(context, "Cannot delete role. It's assigned to a user.", Toast.LENGTH_SHORT).show();
+                } else {
+                    deleteRole(role);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull com.google.firebase.database.DatabaseError error) {
+                Toast.makeText(context, "Error checking role assignments", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
-    @Override
-    public int getItemCount() {
-        return roleList.size();
-    }
-
-    public static class RoleViewHolder extends RecyclerView.ViewHolder {
-
-        TextView roleName, roleDescription;
-        Button deleteButton;
-
-        public RoleViewHolder(@NonNull View itemView) {
-            super(itemView);
-            roleName = itemView.findViewById(R.id.role_name);
-            roleDescription = itemView.findViewById(R.id.role_description);
-            deleteButton = itemView.findViewById(R.id.delete_button); // Assuming you have a delete button in the layout
-        }
-    }
-
-    public interface OnDeleteClickListener {
-        void onDeleteClick(String roleId);
+    private void deleteRole(Role role) {
+        rolesDatabase.child(role.getRoleId()).removeValue().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Toast.makeText(context, "Role deleted", Toast.LENGTH_SHORT).show();
+                roleList.remove(role);
+                notifyDataSetChanged();
+            } else {
+                Toast.makeText(context, "Failed to delete role", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

@@ -7,7 +7,7 @@ public class Role {
     private boolean fullAccess;
 
     public Role() {
-        // Constructor vacío requerido por Firebase
+        // Empty constructor for Firebase
     }
 
     public Role(String roleId, String roleName, String roleDescription, boolean fullAccess) {

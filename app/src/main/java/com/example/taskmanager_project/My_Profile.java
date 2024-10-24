@@ -18,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.squareup.picasso.Picasso;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -73,12 +74,13 @@ public class My_Profile extends AppCompatActivity {
 
         if (currentUser != null) {
             emailUser = currentUser.getEmail();
+            // Cargar la URL de la imagen del usuario desde Firebase
             userDatabase.child(currentUser.getUid()).child("photoUrl").get().addOnCompleteListener(task -> {
                 if (task.isSuccessful() && task.getResult() != null) {
                     String photoUrl = task.getResult().getValue(String.class);
                     if (photoUrl != null) {
-                        Uri photoUri = Uri.parse(photoUrl);
-                        new SaveImageHelper(firebaseimage).loadImage(photoUrl);
+                        // Cargar la imagen usando Picasso directamente desde la URL almacenada
+                        Picasso.get().load(photoUrl).into(firebaseimage);
                     }
                 } else {
                     Log.e(TAG, "Error al cargar la imagen de Firebase", task.getException());
@@ -203,6 +205,11 @@ public class My_Profile extends AppCompatActivity {
     }
 
     private void uploadImage() {
+        if (imageUri == null) {
+            Toast.makeText(My_Profile.this, "Please select an image to upload.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Uploading File...");
         progressDialog.show();
@@ -215,7 +222,7 @@ public class My_Profile extends AppCompatActivity {
         storageReference.putFile(imageUri)
                 .addOnSuccessListener(taskSnapshot -> storageReference.getDownloadUrl().addOnSuccessListener(uri -> {
                     String imageUrl = uri.toString();
-                    firebaseimage.setImageURI(imageUri);
+                    Picasso.get().load(imageUrl).into(firebaseimage);
                     Toast.makeText(My_Profile.this, "Successfully Uploaded", Toast.LENGTH_SHORT).show();
                     if (progressDialog.isShowing())
                         progressDialog.dismiss();
