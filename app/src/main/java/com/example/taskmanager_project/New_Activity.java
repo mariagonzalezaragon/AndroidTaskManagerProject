@@ -93,32 +93,50 @@ public class New_Activity extends AppCompatActivity {
             String userName = selectedUser.getUserName();
             if ("Project Manager".equals(userRole) || "Product Owner".equals(userRole)) {
                 Task task = new Task(taskName, dueDate, status, userId, userName);
-                taskRef.push().setValue(task);
+                taskRef.push().setValue(task).addOnCompleteListener(taskSave -> {
+                    if (taskSave.isSuccessful()) {
+
+                        Toast.makeText(this, "Task added successfully", Toast.LENGTH_SHORT).show();
+
+                        taskNameEditText.setText("");
+                        dueDateEditText.setText("");
+                        statusSpinner.setSelection(0);
+                        userSpinner.setSelection(0);
+                    } else {
+                        Toast.makeText(this, "Failed to add task", Toast.LENGTH_SHORT).show();
+                    }
+                });  // Save to Firebase
+
+
+
             }else {
+                // Handle the case where the user does not have the right to add tasks
                 Toast.makeText(this, "You do not have permission to add tasks.", Toast.LENGTH_SHORT).show();
             }
 
         });
 
+        // Load users from Firebase
         loadUsersFromFirebase();
 
+        // Listen for changes in Firebase for tasks
         taskRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                taskList.clear();
+                taskList.clear(); // Clear the list before updating
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Task task = snapshot.getValue(Task.class);
                     if (task != null) {
-                        task.setId(snapshot.getKey());
+                        task.setId(snapshot.getKey());  // Set the task ID from Firebase
                         taskList.add(task);
                     }
                 }
-                taskAdapter.notifyDataSetChanged();
+                taskAdapter.notifyDataSetChanged(); // Notify the adapter after the data is updated
             }
 
             @Override
             public void onCancelled(DatabaseError error) {
-
+                // Handle error
             }
         });
     }

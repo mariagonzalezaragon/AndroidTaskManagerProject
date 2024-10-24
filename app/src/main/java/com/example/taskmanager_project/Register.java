@@ -78,7 +78,7 @@ public class Register extends AppCompatActivity {
         rolesDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                rolesList.add("Select a role"); // Opción por defecto
+                rolesList.add("Select a role");
                 for (DataSnapshot roleSnapshot : snapshot.getChildren()) {
                     String roleName = roleSnapshot.child("roleName").getValue(String.class);
                     if (roleName != null) {
