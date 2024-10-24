@@ -6,36 +6,122 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:gravity="center_vertical"
     android:orientation="vertical"
+    android:gravity="center"
     android:layout_margin="20dp">
-
-    <Button
-        android:id="@+id/btn1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:text="My Profile"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Choose your option"
-        android:textSize="20dp"
+        android:text="TASK MANAGEMENT APP"
+        android:textSize="30dp"
+        android:textStyle="bold"
+        android:layout_marginBottom="20dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:layout_marginBottom="30dp"
+        android:layout_marginTop="10dp">
+        <LinearLayout
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/topImage"
+                android:layout_width="120dp"
+                android:layout_height="150dp"
+                android:layout_gravity="center_horizontal" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:orientation="vertical">
+
+        <TextView
+        android:id="@+id/nametxt"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="Name : "
         android:textStyle="bold"/>
 
-    <Button
-        android:id="@+id/btn2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:text="Task Management"/>
+        <TextView
+            android:id="@+id/personaltxt"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Email :"
+            android:textStyle="bold"/>
+
+        <TextView
+                android:id="@+id/positiontxt"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Position :"
+                android:textStyle="bold"/>
+
+            <Button
+                android:id="@+id/btnEditProfile"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:text="Edit Profile" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+   <TextView
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_marginTop="80dp"
+       android:textSize="20dp"
+       android:textStyle="bold"
+       android:text="Select an option :"/>
 
     <Button
-        android:id="@+id/btn3"
-        android:layout_width="match_parent"
+        android:id="@+id/btnTasks"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:text="Dashboard"/>
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="20dp"
+        android:text="Task Management"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnUsers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="40dp"
+            android:text="Manage Users" />
+        <Button
+            android:id="@+id/btnRoles"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="40dp"
+            android:text="Manage Roles" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/logout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Logout" />
 
 </LinearLayout>
