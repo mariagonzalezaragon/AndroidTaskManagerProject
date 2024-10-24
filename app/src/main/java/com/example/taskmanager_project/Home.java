@@ -153,7 +153,7 @@ public class Home extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
-                    currentUserRole = snapshot.child("role").getValue(String.class); // Save the role
+                    currentUserRole = snapshot.child("role").getValue(String.class);
 
                     assert currentUserRole != null;
                     if (currentUserRole.equals("Project Manager")) {
@@ -171,6 +171,6 @@ public class Home extends AppCompatActivity {
     }
 
     public String getCurrentUserRole() {
-        return currentUserRole; // Add this method to access the role
+        return currentUserRole;
     }
 }

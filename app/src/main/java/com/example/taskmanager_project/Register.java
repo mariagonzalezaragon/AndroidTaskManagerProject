@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Patterns;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -11,18 +12,17 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,19 +34,17 @@ public class Register extends AppCompatActivity {
     private String photoUrl = "https://example.com/profile.jpg";
     Button registerButton, loginregButton;
     List<String> rolesList;
-    private DatabaseReference userDatabase;
+    private DatabaseReference userDatabase, rolesDatabase;
     FirebaseAuth firebaseAuth;
-    FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        db = FirebaseFirestore.getInstance();
         userDatabase = FirebaseDatabase.getInstance().getReference("users");
+        rolesDatabase = FirebaseDatabase.getInstance().getReference("Roles");
         firebaseAuth = FirebaseAuth.getInstance();
-
         nameEditText = findViewById(R.id.name);
         emailEditText = findViewById(R.id.emailregister);
         passwordEditText = findViewById(R.id.passwordregister);
@@ -56,7 +54,9 @@ public class Register extends AppCompatActivity {
 
         rolesList = new ArrayList<>();
         Spinner spinner = findViewById(R.id.spinner);
+
         loadRoles(spinner);
+
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -75,24 +75,26 @@ public class Register extends AppCompatActivity {
     }
 
     private void loadRoles(Spinner spinner) {
-        db.collection("roles")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                String roleName = document.getString("roleName");
-                                rolesList.add(roleName);
-                            }
-                            ArrayAdapter<String> adapter = new ArrayAdapter<>(Register.this, android.R.layout.simple_spinner_item, rolesList);
-                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                            spinner.setAdapter(adapter);
-                        } else {
-                            Toast.makeText(Register.this, "Error obteniendo roles", Toast.LENGTH_SHORT).show();
-                        }
+        rolesDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                rolesList.add("Select a role"); // Opción por defecto
+                for (DataSnapshot roleSnapshot : snapshot.getChildren()) {
+                    String roleName = roleSnapshot.child("roleName").getValue(String.class);
+                    if (roleName != null) {
+                        rolesList.add(roleName);
                     }
-                });
+                }
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(Register.this, android.R.layout.simple_spinner_item, rolesList);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinner.setAdapter(adapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(Register.this, "Error loading roles", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

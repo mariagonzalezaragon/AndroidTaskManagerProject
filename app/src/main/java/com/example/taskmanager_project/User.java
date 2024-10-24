@@ -8,7 +8,7 @@ public class User {
     private String photoUrl;
 
     public User() {
-        // Constructor vacío necesario para Firebase
+
     }
 
     public User(String userId, String email, String userName, String role, String photoUrl) {
@@ -24,7 +24,7 @@ public class User {
         this.role = updatedRole;
     }
 
-    // Getters y Setters
+
     public String getUserId() {
         return userId;
     }

@@ -49,11 +49,10 @@ public class Roles_Activity extends AppCompatActivity {
 
         buttonAddRole.setOnClickListener(view -> addRole());
 
-        // Acción para regresar a Home cuando se presione el botón "Back"
         buttonBack.setOnClickListener(view -> {
             Intent intent = new Intent(Roles_Activity.this, Home.class);
             startActivity(intent);
-            finish();  // Cierra la actividad actual
+            finish();
         });
     }
 

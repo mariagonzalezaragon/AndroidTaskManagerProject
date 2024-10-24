@@ -71,21 +71,16 @@ public class New_Activity extends AppCompatActivity {
             }
         });
 
-        // Setup DatePicker for due date
         dueDateEditText.setOnClickListener(v -> showDatePickerDialog());
 
-        // Setup spinner for task status
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.task_status, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         statusSpinner.setAdapter(adapter);
-
-        // Setup RecyclerView
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+       recyclerView.setLayoutManager(new LinearLayoutManager(this));
         taskAdapter = new TaskAdapter(taskList, taskRef);  // Pass the taskRef here
         recyclerView.setAdapter(taskAdapter);
 
-        // Add new task
         addButton.setOnClickListener(v -> {
             String taskName = taskNameEditText.getText().toString();
             String dueDate = dueDateEditText.getText().toString();
@@ -98,35 +93,32 @@ public class New_Activity extends AppCompatActivity {
             String userName = selectedUser.getUserName();
             if ("Project Manager".equals(userRole) || "Product Owner".equals(userRole)) {
                 Task task = new Task(taskName, dueDate, status, userId, userName);
-                taskRef.push().setValue(task);  // Save to Firebase
+                taskRef.push().setValue(task);
             }else {
-                // Handle the case where the user does not have the right to add tasks
                 Toast.makeText(this, "You do not have permission to add tasks.", Toast.LENGTH_SHORT).show();
             }
 
         });
 
-        // Load users from Firebase
         loadUsersFromFirebase();
 
-        // Listen for changes in Firebase for tasks
         taskRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                taskList.clear(); // Clear the list before updating
+                taskList.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Task task = snapshot.getValue(Task.class);
                     if (task != null) {
-                        task.setId(snapshot.getKey());  // Set the task ID from Firebase
+                        task.setId(snapshot.getKey());
                         taskList.add(task);
                     }
                 }
-                taskAdapter.notifyDataSetChanged(); // Notify the adapter after the data is updated
+                taskAdapter.notifyDataSetChanged();
             }
 
             @Override
             public void onCancelled(DatabaseError error) {
-                // Handle error
+
             }
         });
     }
@@ -188,7 +180,6 @@ public class New_Activity extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                // Handle possible errors
             }
         });
     }

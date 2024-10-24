@@ -36,7 +36,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         Task task = taskList.get(position);
         holder.taskNameTextView.setText(task.getTaskName());
         holder.dueDateTextView.setText(task.getDueDate());
-        holder.userTextView.setText(task.getUserName()); // Add this line to display the user's name
+        holder.userTextView.setText(task.getUserName());
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(holder.itemView.getContext(),
                 R.array.task_status, android.R.layout.simple_spinner_item);
@@ -72,7 +72,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     }
 
     public static class TaskViewHolder extends RecyclerView.ViewHolder {
-        TextView taskNameTextView, dueDateTextView, userTextView; // Add userTextView here
+        TextView taskNameTextView, dueDateTextView, userTextView;
         Spinner statusSpinner;
         Button saveButton, deleteButton;
 
@@ -80,7 +80,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             super(itemView);
             taskNameTextView = itemView.findViewById(R.id.taskNameTextView);
             dueDateTextView = itemView.findViewById(R.id.dueDateTextView);
-            userTextView = itemView.findViewById(R.id.userTextView); // Initialize userTextView here
+            userTextView = itemView.findViewById(R.id.userTextView);
             statusSpinner = itemView.findViewById(R.id.statusSpinner);
             saveButton = itemView.findViewById(R.id.saveButton);
             deleteButton = itemView.findViewById(R.id.deleteButton);
