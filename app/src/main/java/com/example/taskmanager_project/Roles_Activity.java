@@ -16,7 +16,7 @@ import com.google.firebase.database.FirebaseDatabase;
 public class Roles_Activity extends AppCompatActivity {
 
     private EditText edtRoleName, edtRoleDescription;
-    private CheckBox chkFullAccess; // Nuevo campo para elegir si el rol tiene acceso completo
+    private CheckBox chkFullAccess;
     private Button btnCreateRole, btnBackToHome;
     private DatabaseReference rolesDatabase;
 
@@ -25,13 +25,11 @@ public class Roles_Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_roles);
 
-        // Referencia a la tabla Roles en Firebase
         rolesDatabase = FirebaseDatabase.getInstance().getReference("Roles");
 
-        // Inicializar los elementos de la UI
         edtRoleName = findViewById(R.id.edtRoleName);
         edtRoleDescription = findViewById(R.id.edtRoleDescription);
-        chkFullAccess = findViewById(R.id.chkFullAccess); // CheckBox para el acceso completo
+        chkFullAccess = findViewById(R.id.chkFullAccess);
         btnCreateRole = findViewById(R.id.btnCreateRole);
         btnBackToHome = findViewById(R.id.btnBackToHome);
 
