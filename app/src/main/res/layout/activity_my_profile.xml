@@ -214,7 +214,6 @@
         android:layout_height="match_parent"
         android:orientation="horizontal"
         android:gravity="center">
->
 
         <Button
             android:id="@+id/btnHome"

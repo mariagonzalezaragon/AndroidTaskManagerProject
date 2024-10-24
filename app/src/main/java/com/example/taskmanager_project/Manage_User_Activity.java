@@ -41,26 +41,18 @@ public class Manage_User_Activity extends AppCompatActivity {
         userAdapter = new UserAdapter(userList);
         recyclerViewUsers.setAdapter(userAdapter);
 
-        btnAddUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Manage_User_Activity.this, Register.class);
-                startActivity(intent);
-            }
+        btnAddUser.setOnClickListener(v -> {
+            Intent intent = new Intent(Manage_User_Activity.this, Register.class);
+            startActivity(intent);
         });
 
-        btnHome.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Ir a la actividad Home
-                Intent intent = new Intent(Manage_User_Activity.this, Home.class);
-                startActivity(intent);
-                finish();
-            }
+        btnHome.setOnClickListener(v -> {
+            Intent intent = new Intent(Manage_User_Activity.this, Home.class);
+            startActivity(intent);
+            finish();
         });
     }
 
-    // Método para cargar usuarios desde Firebase Database
     private void loadUsersFromDatabase() {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -79,7 +71,8 @@ public class Manage_User_Activity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e("Manage_User_Activity", "Error al cargar usuarios", databaseError.toException());
+                Log.e("Manage_User_Activity", "Error al cargar usuarios",
+                        databaseError.toException());
             }
         });
     }

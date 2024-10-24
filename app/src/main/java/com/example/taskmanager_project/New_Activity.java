@@ -61,14 +61,11 @@ public class New_Activity extends AppCompatActivity {
 
         loadCurrentUserRole();
 
-        go_to_home.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(New_Activity.this,
-                        Home.class);
-                startActivity(intent);
-                finish();
-            }
+        go_to_home.setOnClickListener(view -> {
+            Intent intent = new Intent(New_Activity.this,
+                    Home.class);
+            startActivity(intent);
+            finish();
         });
 
         dueDateEditText.setOnClickListener(v -> showDatePickerDialog());

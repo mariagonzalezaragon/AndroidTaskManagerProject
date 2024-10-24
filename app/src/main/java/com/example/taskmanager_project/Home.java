@@ -1,5 +1,4 @@
 package com.example.taskmanager_project;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
@@ -16,11 +15,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class Home extends AppCompatActivity {
@@ -93,34 +88,25 @@ public class Home extends AppCompatActivity {
         }
 
 
-        editProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-        public void onClick(View view) {
+        editProfile.setOnClickListener(view -> {
+        Intent intent = new Intent(Home.this,
+                My_Profile.class);
+        startActivity(intent);
+        finish();
+        });
+
+        taskManagement.setOnClickListener(view -> {
             Intent intent = new Intent(Home.this,
-                    My_Profile.class);
+                    New_Activity.class);
             startActivity(intent);
             finish();
-            }
         });
 
-        taskManagement.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Home.this,
-                        New_Activity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
-
-        users.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Home.this,
-                        Manage_User_Activity.class);
-                startActivity(intent);
-                finish();
-            }
+        users.setOnClickListener(view -> {
+            Intent intent = new Intent(Home.this,
+                    Manage_User_Activity.class);
+            startActivity(intent);
+            finish();
         });
 
         roles.setOnClickListener(new View.OnClickListener() {
@@ -170,7 +156,4 @@ public class Home extends AppCompatActivity {
         });
     }
 
-    public String getCurrentUserRole() {
-        return currentUserRole;
-    }
 }

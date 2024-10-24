@@ -9,7 +9,6 @@ public class Task {
     private String userName;
 
 
-    // Add this field to store the user's name
 
     // Default constructor
     public Task() {}
@@ -26,24 +25,13 @@ public class Task {
         return userName;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
     // Getters and setters
     public String getTaskName() {
         return taskName;
     }
 
-    public void setTaskName(String taskName) {
-        this.taskName = taskName;
-    }
-
     public String getDueDate() {
         return dueDate;
-    }
-
-    public void setDueDate(String dueDate) {
-        this.dueDate = dueDate;
     }
 
     public String getStatus() {
@@ -52,14 +40,6 @@ public class Task {
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
     }
 
     public String getId() {
